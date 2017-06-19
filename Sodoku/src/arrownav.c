@@ -1,6 +1,6 @@
 #include<conio.h> //Header file for the kbhit command
-#include<stdio.h>
-#include<stdlib.h>
+#include<stdio.h> //Standard
+#include<stdlib.h>//header
 
 
 void navigation(char keypressed[])
