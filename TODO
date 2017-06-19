@@ -1,8 +1,8 @@
-Datenbankanbindung
-Userinterface
-Logik für Userinterface
-Sodoku Bedienfeld(Steuerung)
-Hilfe/Regeln
-Login/Registration
-Bestenliste
-Prüfen des Sodokus
+1. Datenbankanbindung (Simon)
+2. Userinterface (Yannik)
+  2.1 Logik für Userinterface (Timo, Lukas)
+  2.2 Sodoku Bedienfeld(Steuerung) (Nick)
+3. Hilfe/Regeln 
+4. Login/Registration
+5. Bestenliste(Berechnung in Abhängigkeit des Schwierigkeitsgrads) (Joel)
+6. Prüfen des Sodokus
