@@ -56,8 +56,8 @@ int initSudoku(int difficulty, sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][S
 	return 1; // OK
 }
 
-int validateSudoku(){
-	return 0;
+int validateSudoku(sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]){
+  return 0; 
 }
 
 int validateRow(){
