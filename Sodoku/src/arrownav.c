@@ -3,7 +3,7 @@
 #include<stdlib.h> 
 
 
-void navigation(char keypressed[])
+void navigation(char cKeyPressed[])
 {
 	int ch;
 	int loop = 0;
@@ -20,13 +20,13 @@ void navigation(char keypressed[])
 			}
 			switch (ch) //Giving "keypressed" the right content
 			{
-			case 72: strcpy(keypressed, "UP"); loop=1; break; //Setting "loop" on to 1
-			case 80: strcpy(keypressed, "DOWN"); loop=1; break;//to brake the while loop
-			case 75: strcpy(keypressed, "LEFT"); loop=1; break;
-			case 77: strcpy(keypressed, "RIGHT"); loop=1; break;
-			case 8: strcpy(keypressed, "RETURN"); loop=1; break;
-			case 27: strcpy(keypressed, "ESCAPE"); loop=1; break;
-			case 13: strcpy(keypressed, "ENTER"); loop=1; break;
+			case 72: strcpy(cKeyPressed, "UP"); loop=1; break; //Setting "loop" on to 1
+			case 80: strcpy(cKeyPressed, "DOWN"); loop=1; break;//to brake the while loop
+			case 75: strcpy(cKeyPressed, "LEFT"); loop=1; break;
+			case 77: strcpy(cKeyPressed, "RIGHT"); loop=1; break;
+			case 8: strcpy(cKeyPressed, "RETURN"); loop=1; break;
+			case 27: strcpy(cKeyPressed, "ESCAPE"); loop=1; break;
+			case 13: strcpy(cKeyPressed, "ENTER"); loop=1; break;
 			default:
 				break;
 			}
