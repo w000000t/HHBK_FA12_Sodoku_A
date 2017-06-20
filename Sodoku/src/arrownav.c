@@ -20,13 +20,13 @@ void navigation(char keypressed[])
 			}
 			switch (ch) //Giving "keypressed" the right content
 			{
-			case 72: keypressed="UP"; loop=1; break; //Setting "loop" on to 1
-			case 80: keypressed="DOWN"; loop=1; break;//to brake the while loop
-			case 75: keypressed="LEFT"; loop=1; break;
-			case 77: keypressed="RIGHT"; loop=1; break;
-			case 8: keypressed="RETURN"; loop=1; break;
-			case 27: keypressed="ESCAPE"; loop=1; break;
-			case 13: keypressed="ENTER"; loop=1; break;
+			case 72: strcpy(keypressed, "UP"); loop=1; break; //Setting "loop" on to 1
+			case 80: strcpy(keypressed, "DOWN"); loop=1; break;//to brake the while loop
+			case 75: strcpy(keypressed, "LEFT"); loop=1; break;
+			case 77: strcpy(keypressed, "RIGHT"); loop=1; break;
+			case 8: strcpy(keypressed, "RETURN"); loop=1; break;
+			case 27: strcpy(keypressed, "ESCAPE"); loop=1; break;
+			case 13: strcpy(keypressed, "ENTER"); loop=1; break;
 			default:
 				break;
 			}
