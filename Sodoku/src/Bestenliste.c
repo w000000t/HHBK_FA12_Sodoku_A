@@ -43,8 +43,7 @@ void showHighscore(){
     printf("Bestenliste\n");
     lineBreaks();
     quadWhiteSpace();
-    printf("Platz");
-    printf("\t\t\t");
+    quadWhiteSpace();
     printf("Punkte");
     printf("\t\t\t");
     printf("Name");
