@@ -1,20 +1,5 @@
 #include "sudoku.h"
 
-int main(void){
-	sudoku_field sudoku_fields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS];
-	int i,j;
-
-	initSudoku(1, sudoku_fields);
-
-	for(i = 0; i < SUDOKU_FIELDS_X_AXIS; i++){
-		for(j = 0; j < SUDOKU_FIELDS_Y_AXIS; j++){
-			printf("%i ", sudoku_fields[i][j].value);
-		}
-		printf("\n");
-	}
-
-	system("pause");
-}
 int initSudoku(int difficulty, sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]){
 	int iXAXIS, iYAXIS, rc, cols, iCols, iColNrXCord, iColNrYCord, iColNrValue;
 	sqlite3 *db;
@@ -52,7 +37,6 @@ int initSudoku(int difficulty, sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][S
 
 	cols = sqlite3_column_count(stmt);
 	while(sqlite3_step(stmt) == SQLITE_ROW){
-		printf("cols: %i \n", cols);
 		for(iCols = 0; iCols < cols; iCols++){
 			if(strcmp((const char*)sqlite3_column_name(stmt, iCols), "x_cord") == 0){
 				iColNrXCord = sqlite3_column_int(stmt, iCols);
