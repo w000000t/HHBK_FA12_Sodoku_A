@@ -14,6 +14,6 @@ void printSuccessMessage(char username);
 void showDifficulty();
 void showLoggedInStartScreen();
 void printFieldHorizontal();
-void printField(int * sudokuWerte[8][8]);
+void printField(sudoku_field sudoku_fields[8][8]);
 void showHighscore();
 void showIntro();

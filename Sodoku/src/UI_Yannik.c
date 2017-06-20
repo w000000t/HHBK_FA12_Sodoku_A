@@ -1,3 +1,4 @@
+#include "sudoku.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <Windows.h>
@@ -239,84 +240,22 @@ Name: printField
 Parameter: /
 Description:
 ******************************************************************************/
-void printField(int * sudokuWerte[8][8])
+void printField(sudoku_field sudoku_fields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS])
 {
 
-	system("cls");
+		/*sudoku_field sudoku_fields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS];*/
+	int i,j;
 
-	lineBreaks();
-	hexaWhiteSpace();
-	printFieldHorizontal();
-	hexaWhiteSpace();
-	printf("\xB3  %d   \xB3  %d   \xB3  %d   \xB3  %d   \xB3  %d   \xB3  %d   ", sudokuWerte[0][0], sudokuWerte[0][1], sudokuWerte[0][2], sudokuWerte[0][3], sudokuWerte[0][4], sudokuWerte[0][5]);
-	printf("\xB3  %d   \xB3  %d   \xB3  %d   \xB3\n", sudokuWerte[0][6], sudokuWerte[0][7], sudokuWerte[0][8]);
-	hexaWhiteSpace();
-	printf("\xB3      \xB3      \xB3      \xB3      \xB3      \xB3      ");
-	printf("\xB3      \xB3      \xB3      \xB3      \n");
-	hexaWhiteSpace();
-	printFieldHorizontal();
-	hexaWhiteSpace();
-	printf("\xB3  %d   \xB3  %d   \xB3  %d   \xB3  %d   \xB3  %d   \xB3  %d   ", sudokuWerte[1][0], sudokuWerte[1][1], sudokuWerte[1][2], sudokuWerte[1][3], sudokuWerte[1][4], sudokuWerte[1][5]);
-	printf("\xB3  %d   \xB3  %d   \xB3  %d   \xB3\n", sudokuWerte[1][6], sudokuWerte[1][7], sudokuWerte[1][8]);
-	hexaWhiteSpace();
-	printf("\xB3      \xB3      \xB3      \xB3      \xB3      \xB3      ");
-	printf("\xB3      \xB3      \xB3      \xB3      \n");
-	hexaWhiteSpace();
-	printFieldHorizontal();
-	hexaWhiteSpace();
-	printf("\xB3  %d   \xB3  %d   \xB3  %d   \xB3  %d   \xB3  %d   \xB3  %d   ", sudokuWerte[2][0], sudokuWerte[2][1], sudokuWerte[2][2], sudokuWerte[2][3], sudokuWerte[2][4], sudokuWerte[2][5]);
-	printf("\xB3  %d   \xB3  %d   \xB3  %d   \xB3\n", sudokuWerte[2][6], sudokuWerte[2][7], sudokuWerte[2][8]);
-	hexaWhiteSpace();
-	printf("\xB3      \xB3      \xB3      \xB3      \xB3      \xB3      ");
-	printf("\xB3      \xB3      \xB3      \xB3      \n");
-	hexaWhiteSpace();
-	printFieldHorizontal();
-	hexaWhiteSpace();
-	printf("\xB3  %d   \xB3  %d   \xB3  %d   \xB3  %d   \xB3  %d   \xB3  %d   ", sudokuWerte[3][0], sudokuWerte[3][1], sudokuWerte[3][2], sudokuWerte[3][3], sudokuWerte[3][4], sudokuWerte[3][5]);
-	printf("\xB3  %d   \xB3  %d   \xB3  %d   \xB3\n", sudokuWerte[3][6], sudokuWerte[3][7], sudokuWerte[3][8]);
-	hexaWhiteSpace();
-	printf("\xB3      \xB3      \xB3      \xB3      \xB3      \xB3      ");
-	printf("\xB3      \xB3      \xB3      \xB3      \n");
-	hexaWhiteSpace();
-	printFieldHorizontal();
-	hexaWhiteSpace();
-	printf("\xB3  %d   \xB3  %d   \xB3  %d   \xB3  %d   \xB3  %d   \xB3  %d   ", sudokuWerte[4][0], sudokuWerte[4][1], sudokuWerte[4][2], sudokuWerte[4][3], sudokuWerte[4][4], sudokuWerte[4][5]);
-	printf("\xB3  %d   \xB3  %d   \xB3  %d   \xB3\n", sudokuWerte[4][6], sudokuWerte[4][7], sudokuWerte[4][8]);
-	hexaWhiteSpace();
-	printf("\xB3      \xB3      \xB3      \xB3      \xB3      \xB3      ");
-	printf("\xB3      \xB3      \xB3      \xB3      \n");
-	hexaWhiteSpace();
-	printFieldHorizontal();
-	hexaWhiteSpace();
-	printf("\xB3  %d   \xB3  %d   \xB3  %d   \xB3  %d   \xB3  %d   \xB3  %d   ", sudokuWerte[5][0], sudokuWerte[5][1], sudokuWerte[5][2], sudokuWerte[5][3], sudokuWerte[5][4], sudokuWerte[5][5]);
-	printf("\xB3  %d   \xB3  %d   \xB3  %d   \xB3\n", sudokuWerte[5][6], sudokuWerte[5][7], sudokuWerte[5][8]);
-	hexaWhiteSpace();
-	printf("\xB3      \xB3      \xB3      \xB3      \xB3      \xB3      ");
-	printf("\xB3      \xB3      \xB3      \xB3      \n");
-	hexaWhiteSpace();
-	printFieldHorizontal();
-	hexaWhiteSpace();
-	printf("\xB3  %d   \xB3  %d   \xB3  %d   \xB3  %d   \xB3  %d   \xB3  %d   ", sudokuWerte[6][0], sudokuWerte[6][1], sudokuWerte[6][2], sudokuWerte[6][3], sudokuWerte[6][4], sudokuWerte[6][5]);
-	printf("\xB3  %d   \xB3  %d   \xB3  %d   \xB3\n", sudokuWerte[6][6], sudokuWerte[6][7], sudokuWerte[6][8]);
-	hexaWhiteSpace();
-	printf("\xB3      \xB3      \xB3      \xB3      \xB3      \xB3      ");
-	printf("\xB3      \xB3      \xB3      \xB3      \n");
-	hexaWhiteSpace();
-	printFieldHorizontal();
-	hexaWhiteSpace();
-	printf("\xB3  %d   \xB3  %d   \xB3  %d   \xB3  %d   \xB3  %d   \xB3  %d   ", sudokuWerte[7][0], sudokuWerte[7][1], sudokuWerte[7][2], sudokuWerte[7][3], sudokuWerte[7][4], sudokuWerte[7][5]);
-	printf("\xB3  %d   \xB3  %d   \xB3  %d   \xB3\n", sudokuWerte[7][6], sudokuWerte[7][7], sudokuWerte[7][8]);
-	hexaWhiteSpace();
-	printf("\xB3      \xB3      \xB3      \xB3      \xB3      \xB3      ");
-	printf("\xB3      \xB3      \xB3      \xB3      \n");
-	hexaWhiteSpace();
-	printFieldHorizontal();
-	hexaWhiteSpace();
-	printf("\xB3  %d   \xB3  %d   \xB3  %d   \xB3  %d   \xB3  %d   \xB3  %d   ", sudokuWerte[8][0], sudokuWerte[8][1], sudokuWerte[8][2], sudokuWerte[8][3], sudokuWerte[8][4], sudokuWerte[8][5]);
-	printf("\xB3  %d   \xB3  %d   \xB3  %d   \xB3\n", sudokuWerte[8][6], sudokuWerte[8][7], sudokuWerte[8][8]);
-	hexaWhiteSpace();
-	printf("\xB3      \xB3      \xB3      \xB3      \xB3      \xB3      ");
-	printf("\xB3      \xB3      \xB3      \xB3      \n");
+	for(i = 0; i < SUDOKU_FIELDS_X_AXIS; i++){
+		hexaWhiteSpace();
+		printFieldHorizontal();
+		hexaWhiteSpace();
+		for(j = 0; j < SUDOKU_FIELDS_Y_AXIS; j++){
+			printf("\xB3  %i   ", sudoku_fields[i][j].value);
+		}
+		printf("\xB3\n");
+	}
+
 	hexaWhiteSpace();
 	printFieldHorizontal();
 	hexaWhiteSpace();
@@ -329,6 +268,7 @@ void printField(int * sudokuWerte[8][8])
 	hexaWhiteSpace();
 	whiteSpace();
 	printf("  ESC\n");
+
 
 
 
@@ -397,17 +337,5 @@ void showIntro()
 	//printf("| |   '.___`-.   | || |  | '    ' |  | || |   | |    | | | || | ");
 	//printf("| |    | |  | || |   |  __'.    | || |  | '    ' |  | |");
 }
-/******************************************************************************
-Name: main
-Parameter: /
-Description:
-******************************************************************************/
-int main()
-{
-	printField();
 
-
-	system("pause");
-	return 0;
-}
 
