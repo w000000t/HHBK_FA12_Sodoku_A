@@ -17,18 +17,27 @@ void printRegister();
 void printInputUsername();
 void printInputPassword();
 void printInputPasswordRepeat();
+
 void showDifficulty();
 void showLoggedInStartScreen();
 void showHighscores(char cHighscorer[]);
 void printErrorMessage(char cErrorMessage[]);
 void printSuccessMessage(char cSuccessMessage[]);
 
+int main()
+{
+	Login();
+
+	system("pause");
+	return 0;
+}
+
 //===============================Functions===============================
 /*
 -------------------------------------------------------------------------
 Function readUsername()
 given Parameters: -
-return Value: cUsername
+return Value: -
 Description: Reads the input of the user and returns it (to save it in
 			 a variable)
 -------------------------------------------------------------------------
@@ -39,7 +48,7 @@ void readUsername(char *cUsername)
 	do
 	{
 		fflush(stdin);
-		iError = scanf("%s", &cUsername);
+		iError = scanf("%s", &cUsername[0]);
 	}while(iError == 0 || strcmp(cUsername,"") == 0);
 }
 
@@ -47,7 +56,7 @@ void readUsername(char *cUsername)
 -------------------------------------------------------------------------
 Function readPassword()
 given Parameters: -
-return Value: *cPasswordPtr
+return Value: -
 Description: Reads the input of the user and returns it (to save it in
 			 a variable)
 -------------------------------------------------------------------------
@@ -58,7 +67,7 @@ void readPassword(char *cPassword) //readPasswordRepeat?
 	do
 	{
 		fflush(stdin);
-		iError = scanf("%s", &cPassword);
+		iError = scanf("%s", &cPassword[0]);
 	}while(iError == 0 || strcmp(cPassword,"") == 0);
 }
 
@@ -107,15 +116,15 @@ Description: Goes through the task of resgistering (console
 */
 void Register()
 {
-	char cUsername[] = "", char cPassword[] = "", cPasswordRepeat[] = "";
+	char cUsername[50], cPassword[50], cPasswordRepeat[50];
 
 	printRegister();
 	printInputUsername();
-	cUsername[] = readUsername();
+	readUsername(cUsername);
 	printInputPassword();
-	cPassword[] = readPassword();
+	readPassword(cPassword);
 	printInputPasswordRepeat();
-	cPasswordRepeat[] = readPassword();
+	readPassword(cPasswordRepeat);
 
 	if (strcmp(cPassword, cPasswordRepeat) == 0) //if equal
 	{
