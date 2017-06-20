@@ -83,26 +83,43 @@ Description: Goes through the task of logging in (console
 void Login()
 {
 	char cUsername[50], cPassword[50];
+	char cKeyPressed[10];
+	int iStayInMethod;
 
-	printLogin();
-	printInputUsername();
-	readUsername(cUsername);
-	printInputPassword();
-	readPassword(cPassword);
+	do
+	{		
+		printLogin();
+		printInputUsername();
+		readUsername(cUsername);
+		printInputPassword();
+		readPassword(cPassword);
 
-	/*Database Query Method
+		/*Database Query Method
 	
-	if (Query found something)
-	{
-		showLoggedInStartScreen();
-	}
+		if (Query found something)
+		{
+			showLoggedInStartScreen();
+		}
 
-	else
-	{
-		printErrorMessage("Benutzername oder Passwort ist falsch. 
-		Bitte versuchen Sie es erneut.");
-	}
+		else
+		{
+			printErrorMessage("Benutzername oder Passwort ist falsch. 
+			Wenn du es erneut versuchen möchtest, drücke Enter.");
+
+			navigation(cKeyPressed);
+
+			if (strcmp(cKeyPressed, "ENTER") == 0)
+			{
+				iStayInMethod = 0;
+			}
+
+			else
+			{
+				iStayInMethod = 1;
+			}
+		}
 	*/
+	} while (iStayInMethod == 0);
 }
 
 /*
@@ -117,38 +134,71 @@ Description: Goes through the task of resgistering (console
 void Register()
 {
 	char cUsername[50], cPassword[50], cPasswordRepeat[50];
+	char cKeyPressed[10];
+	int iStayInMethod;
 
-	printRegister();
-	printInputUsername();
-	readUsername(cUsername);
-	printInputPassword();
-	readPassword(cPassword);
-	printInputPasswordRepeat();
-	readPassword(cPasswordRepeat);
-
-	if (strcmp(cPassword, cPasswordRepeat) == 0) //if equal
+	do
 	{
-		/*Database Query
+		printRegister();
+		printInputUsername();
+		readUsername(cUsername);
+		printInputPassword();
+		readPassword(cPassword);
+		printInputPasswordRepeat();
+		readPassword(cPasswordRepeat);
 
-		if userDoesNotExist
+		if (strcmp(cPassword, cPasswordRepeat) == 0) //if equal
 		{
-			printSuccessMessage("Dein Benutzer wurde erfolgreich 
-			angelegt.");
-			showStartScreen();
+			/*Database Query
+
+			if userDoesNotExist
+			{
+				printSuccessMessage("Dein Benutzer wurde erfolgreich 
+				angelegt.");
+				showStartScreen();
+			}
+
+			else
+			{
+				printErrorMessage("Dieser Benutzer existiert bereits. 
+				Wenn Sie es mit einem anderen Benutzernamen erneut
+				versuche möchten, drücken Sie Enter.");
+
+				navigation(cKeyPressed);
+
+				if (strcmp(cKeyPressed, "ENTER") == 0)
+				{
+					iStayInMethod = 0;
+				}
+
+				else
+				{
+					iStayInMethod = 1;
+				}
+			}
+			*/
 		}
 
 		else
 		{
-			printErrorMessage("Dieser Benutzer existiert bereits. 
-			Bitte wählen Sie einen anderen Benutzernamen");
-		}
-		*/
-	}
+			printErrorMessage("Passwörter stimmen nicht überein. Wenn Sie es erneut\
+							  versuche möchten, drücken Sie Enter.");
+		
 
-	else
-	{
-		printErrorMessage("Passwörter stimmen nicht überein. Bitte versuchen Sie es erneut.");
-	}
+			/*navigation(cKeyPressed);
+
+			if (strcmp(cKeyPressed, "ENTER") == 0)
+			{
+				iStayInMethod = 0;
+			}
+
+			else
+			{
+				iStayInMethod = 1;
+			}*/
+
+		}
+	} while (iStayInMethod == 0);	
 }
 
 /*
