@@ -3,14 +3,14 @@
 #include<stdlib.h>
 #include<string.h>
 
-//Funkcionsprototypes
+//Funcionprototypes
 char readUsername();
 char readPassword();
 void Login();
 void Register();
 void getHighscore(int user_id);
 
-//Design-Functionsprototypes
+//Design-Functionprototypes
 void showStartScreen(int iSelector);
 void printLogin();
 void printRegister();
@@ -19,8 +19,9 @@ void printInputPassword();
 void printInputPasswordRepeat();
 void showDifficulty();
 void showLoggedInStartScreen();
-void showHighscores(char Stats[20][20]);
+void showHighscores(char Stats[11][11]);
 void printErrorMessage(char cErrorMessage[]);
+void printSuccessMessage(char cSuccessMessage[]);
 
 //===============================Functions===============================
 /*
@@ -51,7 +52,7 @@ char readUsername()
 -------------------------------------------------------------------------
 Function readPassword()
 given Parameters: -
-return Value: cPassword
+return Value: *cPasswordPtr
 Description: Reads the input of the user and returns it (to save it in
 			 a variable)
 -------------------------------------------------------------------------
@@ -82,7 +83,7 @@ Description: Goes through the task of logging in (console
 -------------------------------------------------------------------------
 */
 void Login()
-{ //=======Still needs work (because of char Arrays/Pointer)=======
+{
 	char cUsername[] = "", cPassword[] = "";
 
 	printLogin();
@@ -100,7 +101,8 @@ void Login()
 
 	else
 	{
-		printErrorMessage("Benutzername oder Passwort ist falsch. Bitte versuchen Sie es erneut.");
+		printErrorMessage("Benutzername oder Passwort ist falsch. 
+		Bitte versuchen Sie es erneut.");
 	}
 	*/
 }
@@ -115,7 +117,7 @@ Description: Goes through the task of resgistering (console
 -------------------------------------------------------------------------
 */
 void Register()
-{ //=======Still needs work (because of char Arrays/Pointer)=======
+{
 	char cUsername[] = "", char cPassword[] = "", cPasswordRepeat[] = "";
 
 	printRegister();
@@ -126,18 +128,21 @@ void Register()
 	printInputPasswordRepeat();
 	cPasswordRepeat[] = readPassword();
 
-	if (cPassword == cPasswordRepeat)
+	if (strcmp(cPassword, cPasswordRepeat) == 0) //if equal
 	{
 		/*Database Query
 
 		if userDoesNotExist
 		{
+			printSuccessMessage("Dein Benutzer wurde erfolgreich 
+			angelegt.");
 			showStartScreen();
 		}
 
 		else
 		{
-			printErrorMessage("Dieser Benutzer existiert bereits. Bitte wählen Sie einen anderen Benutzernamen");
+			printErrorMessage("Dieser Benutzer existiert bereits. 
+			Bitte wählen Sie einen anderen Benutzernamen");
 		}
 		*/
 	}
@@ -164,7 +169,13 @@ void getHighscore(int user_id)
 	/*
 	if loggedin
 	{
-		Database Query to get Highscore and personal Highscore of loggedinUser
+		Database Query to get Highscore and personal Highscore of 
+		loggedinUser
+
+		//Logic to change difficulty and played time to points -> 
+		to sort the Highscore
+		//Logic to prevent bad display 
+		(e.g. 1. place | 2. place | ... | you at 3. place)
 
 		showHighscores(Array);
 	}
@@ -174,8 +185,4 @@ void getHighscore(int user_id)
 		printErrorMessage("Sie müssen eingeloggt sein, um diesen Bereich sehen zu können.");
 	}
 	*/
-
-	//Database Query
-	//Logic to change difficulty and played time to points -> to sort the Highscore
-	//Logic to prevent bad display (e.g. 1. place | 2. place | ... | you at 3. place)
 }
