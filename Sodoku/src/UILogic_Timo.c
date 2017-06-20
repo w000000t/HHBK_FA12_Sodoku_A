@@ -4,8 +4,8 @@
 #include<string.h>
 
 //Funcionprototypes
-char readUsername();
-char readPassword();
+void readUsername(char cUsername[]);
+void readPassword(char cPassword[]);
 void Login();
 void Register();
 void getHighscore(int user_id);
@@ -19,7 +19,7 @@ void printInputPassword();
 void printInputPasswordRepeat();
 void showDifficulty();
 void showLoggedInStartScreen();
-void showHighscores(char Stats[11][11]);
+void showHighscores(char cHighscorer[]);
 void printErrorMessage(char cErrorMessage[]);
 void printSuccessMessage(char cSuccessMessage[]);
 
@@ -33,19 +33,14 @@ Description: Reads the input of the user and returns it (to save it in
 			 a variable)
 -------------------------------------------------------------------------
 */
-char readUsername()
+void readUsername(char *cUsername)
 {
-	char cUsername[] = "";
-	char *cUsernamePtr;
-	cUsernamePtr = &cUsername[0];
 	int iError;
 	do
 	{
 		fflush(stdin);
 		iError = scanf("%s", &cUsername);
-	}while(iError == 0 || strcmp(cUsername,""));
-
-	return *cUsernamePtr;
+	}while(iError == 0 || strcmp(cUsername,"") == 0);
 }
 
 /*
@@ -57,20 +52,14 @@ Description: Reads the input of the user and returns it (to save it in
 			 a variable)
 -------------------------------------------------------------------------
 */
-char readPassword() //readPasswordRepeat?
+void readPassword(char *cPassword) //readPasswordRepeat?
 {
-	char cPassword[] = "";
-	char *cPasswordPtr;
-	cPasswordPtr = &cPassword[0];
 	int iError;
-
 	do
 	{
 		fflush(stdin);
 		iError = scanf("%s", &cPassword);
-	}while(iError == 0 || strcmp(cPassword,"") != 0);
-
-	return *cPasswordPtr;
+	}while(iError == 0 || strcmp(cPassword,"") == 0);
 }
 
 /*
@@ -84,13 +73,13 @@ Description: Goes through the task of logging in (console
 */
 void Login()
 {
-	char cUsername[] = "", cPassword[] = "";
+	char cUsername[50], cPassword[50];
 
 	printLogin();
 	printInputUsername();
-	cUsername[] = readUsername();
+	readUsername(cUsername);
 	printInputPassword();
-	cPassword[] = readPassword();
+	readPassword(cPassword);
 
 	/*Database Query Method
 	
