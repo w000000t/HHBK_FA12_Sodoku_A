@@ -61,12 +61,12 @@ Name: printErrorMessage
 Parameter: /
 Description:
 ******************************************************************************/
-void printErrorMessage(char error)
+void printErrorMessage(char cError)
 {
 	lineBreaks();
 	bigWhiteSpace();
 	whiteSpace();
-	printf("Es ist ein Fehler aufgetreten: %c", error);
+	printf("Es ist ein Fehler aufgetreten: %c", cError);
 }
 
 /******************************************************************************
@@ -83,15 +83,19 @@ void showStartScreen()
 	lineBreaks();
 	bigWhiteSpace();
 	printf("Schnelles Spiel");
+	printSelector(1, iSelector);
 	lineBreaks();
 	bigWhiteSpace();
 	printf(" Login");
+	printSelector(2, iSelector);
 	lineBreaks();
 	bigWhiteSpace();
 	printf("Registrieren");
+	printSelector(3, iSelector);
 	lineBreaks();
 	bigWhiteSpace();
 	printf("	Beenden");
+	printSelector(4, iSelector);
 	lineBreaks();
 }
 
@@ -157,12 +161,12 @@ void printInputPasswordRepeat()
 	printf("Bitte wiederholen sie das Passwort:");
 }
 
-void printSuccessMessage(char username)
+void printSuccessMessage(char cUsername)
 {
 	lineBreaks();
 	bigWhiteSpace();
 	whiteSpace();
-	printf("Es ist ein Fehler aufgetreten: %c", username);
+	printf("Es ist ein Fehler aufgetreten: %c", cUsername);
 }
 
 /******************************************************************************
@@ -180,12 +184,15 @@ void showDifficulty()
 	lineBreaks();
 	bigWhiteSpace();
 	printf("  Leicht");
+	printSelector(1, iSelector);
 	lineBreaks();
 	bigWhiteSpace();
 	printf("  Mittel");
+	printSelector(2, iSelector);
 	lineBreaks();
 	bigWhiteSpace();
 	printf("  Schwer");
+	printSelector(3, iSelector);
 }
 
 /******************************************************************************
@@ -202,18 +209,23 @@ void showLoggedInStartScreen()
 	lineBreaks();
 	bigWhiteSpace();
 	printf("  Spielen");
+	printSelector(1, iSelector);
 	lineBreaks();
 	bigWhiteSpace();
 	printf("Bestenliste");
+	printSelector(2, iSelector);
 	lineBreaks();
 	bigWhiteSpace();
 	printf("  Regeln");
+	printSelector(3, iSelector);
 	lineBreaks();
 	bigWhiteSpace();
 	printf("  Logout");
+	printSelector(4, iSelector);
 	lineBreaks();
 	bigWhiteSpace();
 	printf("  Beenden");
+	printSelector(5, iSelector)
 	lineBreaks();
 }
 
@@ -269,49 +281,6 @@ void printField(sudoku_field sudoku_fields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y
 	whiteSpace();
 	printf("  ESC\n");
 
-
-
-
-	// int i = 9; // Zählervariable
-	// int j = 9; // Zählervariable
-
-	// lineBreaks();
-
-	// while (i > 0)
-	// {
-	//   int x = 9;
-	//   int y = 28;
-	//   bigWhiteSpace();
-	//   while (x > 0)
-	//   {
-	//     printFieldHorizontal();
-	//     x--;
-	//   }
-	//   printf("\xC5\n");
-	//   bigWhiteSpace();
-	//   while (y > 0)
-	//   {
-	//     printFieldVertical();
-
-	//     if (y == 10||y == 20)
-	//     {
-	//       printf("\n");
-	//       bigWhiteSpace();
-	//     }
-
-	//     y--;
-
-	//   }
-	//   printf("\xB3\n");
-	//   i--;
-	// }
-	//bigWhiteSpace();
-	// while (j > 0)
-	// {
-	//   printFieldHorizontal();
-	//   j--;
-	// }
-	// printf("\xC5\n");
 }
 
 void showHighscore()
@@ -320,6 +289,14 @@ void showHighscore()
 	lineBreaks();
 	bigWhiteSpace();
 	printf("Bestenliste\n");
+}
+
+void printSelector(int iPosition, int iSelector)
+{
+	if (iPosition == iSelector)
+	{
+		printf("\t<-");
+	}
 }
 
 void showIntro()
