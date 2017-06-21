@@ -8,7 +8,7 @@
 //Name: bigWhiteSpace
 //Parameter: /
 //Description: Does nine Tabstops
-//******************************************************************************/
+//******************************************************************************
 void bigWhiteSpace()
 {
 	printf("\t\t\t\t\t\t\t\t\t");// 9 Tabstops
@@ -18,7 +18,7 @@ void bigWhiteSpace()
 //Name: whiteSpace
 //Parameter: /
 //Description:Does one Tabstop
-//******************************************************************************/
+//******************************************************************************
 void whiteSpace()
 {
 	printf("\t");
@@ -28,7 +28,7 @@ void whiteSpace()
 //Name: quadWhiteSpace
 //Parameter: /
 //Description:Does four Tabstops
-//******************************************************************************/
+//******************************************************************************
 void quadWhiteSpace()
 {
 	printf("\t\t\t\t");
@@ -38,7 +38,7 @@ void quadWhiteSpace()
 //Name: quadWhiteSpace
 //Parameter: /
 //Description:Does six Tabstops
-//******************************************************************************/
+//******************************************************************************
 void hexaWhiteSpace()
 {
 	quadWhiteSpace();
@@ -50,7 +50,7 @@ void hexaWhiteSpace()
 //Name: lineBreaks
 //Parameter: /
 //Description:
-//******************************************************************************/
+//******************************************************************************
 void lineBreaks()
 {
 	printf("\n\n");
@@ -60,7 +60,7 @@ void lineBreaks()
 //Name: printErrorMessage
 //Parameter: /
 //Description:
-//******************************************************************************/
+//******************************************************************************
 void printErrorMessage(char cError)
 {
 	lineBreaks();
@@ -73,7 +73,7 @@ void printErrorMessage(char cError)
 //Name: showStartScreen
 //Parameter: /
 //Description:
-//******************************************************************************/
+//******************************************************************************
 void showStartScreen(int iSelector)
 {
 	system("cls");
@@ -103,7 +103,7 @@ void showStartScreen(int iSelector)
 //Name: printLogin
 //Parameter: /
 //Description:
-//******************************************************************************/
+//******************************************************************************
 void printLogin()
 {
 	system("cls");
@@ -116,7 +116,7 @@ void printLogin()
 //Name: printRegistration
 //Parameter: /
 //Description:
-//******************************************************************************/
+//******************************************************************************
 void printRegistration()
 {
 	system("cls");
@@ -129,7 +129,7 @@ void printRegistration()
 //Name: printInputUsername
 //Parameter: /
 //Description:
-//******************************************************************************/
+//******************************************************************************
 void printInputUsername()
 {
 	lineBreaks();
@@ -141,7 +141,7 @@ void printInputUsername()
 //Name: printInputPassword
 //Parameter: /
 //Description:
-//******************************************************************************/
+//******************************************************************************
 void printInputPassword()
 {
 	lineBreaks();
@@ -153,7 +153,7 @@ void printInputPassword()
 //Name: printInputPasswordRepeat
 //Parameter: /
 //Description:
-//******************************************************************************/
+//******************************************************************************
 void printInputPasswordRepeat()
 {
 	lineBreaks();
@@ -166,14 +166,14 @@ void printSuccessMessage(char cUsername)
 	lineBreaks();
 	bigWhiteSpace();
 	whiteSpace();
-	printf("Es ist ein Fehler aufgetreten: %c", cUsername);
+	printf("Ihr Username ist: %c", cUsername);
 }
 
 //******************************************************************************
 //Name: showDifficulty
 //Parameter: /
 //Description:
-//******************************************************************************/
+//******************************************************************************
 void showDifficulty(int iSelector)
 {
 	system("cls");
@@ -199,7 +199,7 @@ void showDifficulty(int iSelector)
 //Name: loggedInStartScreen
 //Parameter: /
 //Description:
-//******************************************************************************/
+//******************************************************************************
 void showLoggedInStartScreen(int iSelector)
 {
 	system("cls");
@@ -233,7 +233,7 @@ void showLoggedInStartScreen(int iSelector)
 //Name: printFieldHorizontal
 //Parameter: /
 //Description:
-//******************************************************************************/
+//******************************************************************************
 void printFieldHorizontal()
 {
 	int iCounter = 9;
@@ -249,7 +249,7 @@ void printFieldHorizontal()
 //Name: printField
 //Parameter: /
 //Description:
-//******************************************************************************/
+//******************************************************************************
 void printField(sudoku_field sudoku_fields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS])
 {
 
