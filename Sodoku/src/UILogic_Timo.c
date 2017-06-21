@@ -44,12 +44,17 @@ Description: Reads the input of the user and returns it (to save it in
 */
 void readUsername(char *cUsername)
 {
+	char cUsername[] = "";
+	char *cUsernamePtr;
+	cUsernamePtr = &cUsername[0];
 	int iError;
 	do
 	{
 		fflush(stdin);
 		iError = scanf("%s", &cUsername[0]);
 	}while(iError == 0 || strcmp(cUsername,"") == 0);
+
+	return *cUsernamePtr;
 }
 
 /*
@@ -104,7 +109,7 @@ void Login()
 		else
 		{
 			printErrorMessage("Benutzername oder Passwort ist falsch. 
-			Wenn du es erneut versuchen möchtest, drücke Enter.");
+			Wenn du es erneut versuchen mÃ¶chtest, drÃ¼cke Enter.");
 
 			navigation(cKeyPressed);
 
@@ -162,7 +167,7 @@ void Register()
 			{
 				printErrorMessage("Dieser Benutzer existiert bereits. 
 				Wenn Sie es mit einem anderen Benutzernamen erneut
-				versuche möchten, drücken Sie Enter.");
+				versuche mÃ¶chten, drÃ¼cken Sie Enter.");
 
 				navigation(cKeyPressed);
 
@@ -181,8 +186,8 @@ void Register()
 
 		else
 		{
-			printErrorMessage("Passwörter stimmen nicht überein. Wenn Sie es erneut\
-							  versuche möchten, drücken Sie Enter.");
+			printErrorMessage("PasswÃ¶rter stimmen nicht Ã¼berein. Wenn Sie es erneut\
+							  versuche mÃ¶chten, drÃ¼cken Sie Enter.");
 		
 
 			/*navigation(cKeyPressed);
@@ -230,7 +235,7 @@ void getHighscore(int user_id)
 
 	else
 	{
-		printErrorMessage("Sie müssen eingeloggt sein, um diesen Bereich sehen zu können.");
+		printErrorMessage("Sie mÃ¼ssen eingeloggt sein, um diesen Bereich sehen zu kÃ¶nnen.");
 	}
 	*/
 }

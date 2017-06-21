@@ -15,7 +15,6 @@ int main(){
    return 1;
 }
 
-
 int mainMenu(){
 	int iSelector=0; //The Selector where the "cursor" currently is
 	char sKeypressed[10]; //The Array for what the user has pressed
@@ -57,7 +56,6 @@ int mainMenu(){
 				iSelector=3; //moves selector to the last entry
 			}
 		}
-
 		if(strcmp(sKeypressed, "DOWN")==0){ //cehcks if the user pressed "down"
 			if(iSelector<3){//checks is the selector is not on last item
 				iSelector++; //moves selector one down
@@ -66,7 +64,6 @@ int mainMenu(){
 				iSelector=0; //moves selector to first entry
 			}
 		}
-
 
 
 		printf("\nKey: %s\n", sKeypressed);
@@ -115,8 +112,7 @@ int loggedInMenu(){
 			else{
 				iSelector=0; //moves selector to first entry
 			}
-		}
-
+    }
 	}while(!strcmp(sKeypressed, "RETURN")==0&&
 		!(iSelector==4&&strcmp(sKeypressed, "ENTER")==0));
 }
@@ -172,4 +168,3 @@ int difficulty(){
 	}while(!strcmp(sKeypressed, "RETURN")==0&&
 		iCorrectInput<=0);
 }
-
