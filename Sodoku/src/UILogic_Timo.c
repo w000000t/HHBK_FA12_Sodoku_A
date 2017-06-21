@@ -3,36 +3,46 @@
 #include<stdlib.h>
 #include<string.h>
 
-//Funkcionsprototypes
-char readUsername();
-char readPassword();
+//Funcionprototypes
+void readUsername(char cUsername[]);
+void readPassword(char cPassword[]);
 void Login();
 void Register();
 void getHighscore(int user_id);
 
-//Design-Functionsprototypes
+//Design-Functionprototypes
 void showStartScreen(int iSelector);
 void printLogin();
 void printRegister();
 void printInputUsername();
 void printInputPassword();
 void printInputPasswordRepeat();
+
 void showDifficulty();
 void showLoggedInStartScreen();
-void showHighscores(char Stats[20][20]);
+void showHighscores(char cHighscorer[]);
 void printErrorMessage(char cErrorMessage[]);
+void printSuccessMessage(char cSuccessMessage[]);
+
+int main()
+{
+	Login();
+
+	system("pause");
+	return 0;
+}
 
 //===============================Functions===============================
 /*
 -------------------------------------------------------------------------
 Function readUsername()
 given Parameters: -
-return Value: cUsername
+return Value: -
 Description: Reads the input of the user and returns it (to save it in
 			 a variable)
 -------------------------------------------------------------------------
 */
-char readUsername()
+void readUsername(char *cUsername)
 {
 	char cUsername[] = "";
 	char *cUsernamePtr;
@@ -41,8 +51,8 @@ char readUsername()
 	do
 	{
 		fflush(stdin);
-		iError = scanf("%s", &cUsername);
-	}while(iError == 0 || strcmp(cUsername,""));
+		iError = scanf("%s", &cUsername[0]);
+	}while(iError == 0 || strcmp(cUsername,"") == 0);
 
 	return *cUsernamePtr;
 }
@@ -51,25 +61,19 @@ char readUsername()
 -------------------------------------------------------------------------
 Function readPassword()
 given Parameters: -
-return Value: cPassword
+return Value: -
 Description: Reads the input of the user and returns it (to save it in
 			 a variable)
 -------------------------------------------------------------------------
 */
-char readPassword() //readPasswordRepeat?
+void readPassword(char *cPassword) //readPasswordRepeat?
 {
-	char cPassword[] = "";
-	char *cPasswordPtr;
-	cPasswordPtr = &cPassword[0];
 	int iError;
-
 	do
 	{
 		fflush(stdin);
-		iError = scanf("%s", &cPassword);
-	}while(iError == 0 || strcmp(cPassword,"") != 0);
-
-	return *cPasswordPtr;
+		iError = scanf("%s", &cPassword[0]);
+	}while(iError == 0 || strcmp(cPassword,"") == 0);
 }
 
 /*
@@ -82,27 +86,45 @@ Description: Goes through the task of logging in (console
 -------------------------------------------------------------------------
 */
 void Login()
-{ //=======Still needs work (because of char Arrays/Pointer)=======
-	char cUsername[] = "", cPassword[] = "";
+{
+	char cUsername[50], cPassword[50];
+	char cKeyPressed[10];
+	int iStayInMethod;
 
-	printLogin();
-	printInputUsername();
-	cUsername[] = readUsername();
-	printInputPassword();
-	cPassword[] = readPassword();
+	do
+	{		
+		printLogin();
+		printInputUsername();
+		readUsername(cUsername);
+		printInputPassword();
+		readPassword(cPassword);
 
-	/*Database Query Method
+		/*Database Query Method
 	
-	if (Query found something)
-	{
-		showLoggedInStartScreen();
-	}
+		if (Query found something)
+		{
+			showLoggedInStartScreen();
+		}
 
-	else
-	{
-		printErrorMessage("Benutzername oder Passwort ist falsch. Bitte versuchen Sie es erneut.");
-	}
+		else
+		{
+			printErrorMessage("Benutzername oder Passwort ist falsch. 
+			Wenn du es erneut versuchen möchtest, drücke Enter.");
+
+			navigation(cKeyPressed);
+
+			if (strcmp(cKeyPressed, "ENTER") == 0)
+			{
+				iStayInMethod = 0;
+			}
+
+			else
+			{
+				iStayInMethod = 1;
+			}
+		}
 	*/
+	} while (iStayInMethod == 0);
 }
 
 /*
@@ -115,37 +137,73 @@ Description: Goes through the task of resgistering (console
 -------------------------------------------------------------------------
 */
 void Register()
-{ //=======Still needs work (because of char Arrays/Pointer)=======
-	char cUsername[] = "", char cPassword[] = "", cPasswordRepeat[] = "";
+{
+	char cUsername[50], cPassword[50], cPasswordRepeat[50];
+	char cKeyPressed[10];
+	int iStayInMethod;
 
-	printRegister();
-	printInputUsername();
-	cUsername[] = readUsername();
-	printInputPassword();
-	cPassword[] = readPassword();
-	printInputPasswordRepeat();
-	cPasswordRepeat[] = readPassword();
-
-	if (cPassword == cPasswordRepeat)
+	do
 	{
-		/*Database Query
+		printRegister();
+		printInputUsername();
+		readUsername(cUsername);
+		printInputPassword();
+		readPassword(cPassword);
+		printInputPasswordRepeat();
+		readPassword(cPasswordRepeat);
 
-		if userDoesNotExist
+		if (strcmp(cPassword, cPasswordRepeat) == 0) //if equal
 		{
-			showStartScreen();
+			/*Database Query
+
+			if userDoesNotExist
+			{
+				printSuccessMessage("Dein Benutzer wurde erfolgreich 
+				angelegt.");
+				showStartScreen();
+			}
+
+			else
+			{
+				printErrorMessage("Dieser Benutzer existiert bereits. 
+				Wenn Sie es mit einem anderen Benutzernamen erneut
+				versuche möchten, drücken Sie Enter.");
+
+				navigation(cKeyPressed);
+
+				if (strcmp(cKeyPressed, "ENTER") == 0)
+				{
+					iStayInMethod = 0;
+				}
+
+				else
+				{
+					iStayInMethod = 1;
+				}
+			}
+			*/
 		}
 
 		else
 		{
-			printErrorMessage("Dieser Benutzer existiert bereits. Bitte w�hlen Sie einen anderen Benutzernamen");
-		}
-		*/
-	}
+			printErrorMessage("Passwörter stimmen nicht überein. Wenn Sie es erneut\
+							  versuche möchten, drücken Sie Enter.");
+		
 
-	else
-	{
-		printErrorMessage("Passw�rter stimmen nicht �berein. Bitte versuchen Sie es erneut.");
-	}
+			/*navigation(cKeyPressed);
+
+			if (strcmp(cKeyPressed, "ENTER") == 0)
+			{
+				iStayInMethod = 0;
+			}
+
+			else
+			{
+				iStayInMethod = 1;
+			}*/
+
+		}
+	} while (iStayInMethod == 0);	
 }
 
 /*
@@ -164,18 +222,20 @@ void getHighscore(int user_id)
 	/*
 	if loggedin
 	{
-		Database Query to get Highscore and personal Highscore of loggedinUser
+		Database Query to get Highscore and personal Highscore of 
+		loggedinUser
+
+		//Logic to change difficulty and played time to points -> 
+		to sort the Highscore
+		//Logic to prevent bad display 
+		(e.g. 1. place | 2. place | ... | you at 3. place)
 
 		showHighscores(Array);
 	}
 
 	else
 	{
-		printErrorMessage("Sie m�ssen eingeloggt sein, um diesen Bereich sehen zu k�nnen.");
+		printErrorMessage("Sie müssen eingeloggt sein, um diesen Bereich sehen zu können.");
 	}
 	*/
-
-	//Database Query
-	//Logic to change difficulty and played time to points -> to sort the Highscore
-	//Logic to prevent bad display (e.g. 1. place | 2. place | ... | you at 3. place)
 }
