@@ -246,7 +246,7 @@ void printFieldHorizontal()
 	int iCounter = 9;
 	while(iCounter > 0)
 	{
-		printf("\xC5\xC4\xC4\xC4\xC4\xC4");
+		printf("\xC5\xC4\xC4\xC4\xC4\xC4\xC4");
     iCounter--;
 	}
 
@@ -281,11 +281,11 @@ void printField(sudoku_field sudoku_fields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y
 
 			if ( sudoku_fields[i][j].value == 0)
 			{
-				printf("\xB3     ");
+				printf("\xB3      ");
 			}
 			else
 			{
-				printf("\xB3  %i  ", sudoku_fields[i][j].value);
+				printf("\xB3  %i   ", sudoku_fields[i][j].value);
 			}
 		}
 		printf("\xB3\n");
