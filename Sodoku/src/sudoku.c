@@ -34,7 +34,7 @@ int initSudoku(int difficulty, sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][S
 
 	for(iXAXIS = 0; iXAXIS < SUDOKU_FIELDS_X_AXIS; iXAXIS++){
 		for(iYAXIS = 0; iYAXIS < SUDOKU_FIELDS_Y_AXIS; iYAXIS++){
-			sudokuFields[iXAXIS][iYAXIS].disabled = 1;
+			sudokuFields[iXAXIS][iYAXIS].disabled = 0;
 			sudokuFields[iXAXIS][iYAXIS].value = 0;
 		}
 	}
@@ -72,6 +72,7 @@ int initSudoku(int difficulty, sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][S
 				iColNrValue = sqlite3_column_int(stmt, iCols);
 			}
 		}
+    sudokuFields[iColNrXCord][iColNrYCord].disabled = 1;
 		sudokuFields[iColNrXCord][iColNrYCord].value = iColNrValue;
 	}
 
@@ -114,11 +115,12 @@ int validateRow(int rowXIndex, int rowYIndex, sudoku_field sudokuFields[SUDOKU_F
 	initExistingValuesArrays(existingValuesVertical, SUDOKU_FIELDS_X_AXIS);
 	initExistingValuesArrays(existingValuesHorizontal, SUDOKU_FIELDS_Y_AXIS);
 
-	// vertical check
 	for(iCol = 0; iCol < SUDOKU_FIELDS_X_AXIS; iCol++){
 		currentValue = sudokuFields[rowXIndex][iCol].value;
 
-		valueIndex = currentValue == 0 ? 0 : currentValue - 1;
+    if(currentValue == 0) continue;
+
+		valueIndex = currentValue - 1;
 		if(existingValuesVertical[valueIndex] == 1){
 			return 0;
 		}else{
@@ -128,6 +130,8 @@ int validateRow(int rowXIndex, int rowYIndex, sudoku_field sudokuFields[SUDOKU_F
 	// horizontal check
 	for(iCol = 0; iCol < SUDOKU_FIELDS_Y_AXIS; iCol++){
 		currentValue = sudokuFields[iCol][rowYIndex].value;
+
+    if(currentValue == 0) continue;
 
 		valueIndex = currentValue == 0 ? 0 : currentValue - 1;
 		if(existingValuesHorizontal[valueIndex] == 1){
@@ -203,5 +207,37 @@ int validateFields(sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS
 		}
 	}
 	return rc;
+}
+
+int getPossibleNumbersForField(
+  int xCord, 
+  int yCord, 
+  sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]
+){
+  int *possibleNumbers = NULL, maxNumbers = 9, neededNumberCount = 0, i, originalValue;
+  originalValue = sudokuFields[xCord][yCord].value;
+
+  possibleNumbers = (int *)malloc(sizeof(int));
+
+  if(possibleNumbers == NULL){
+    printf("Failed to allocate memory");
+    system("pause");
+  }
+
+  for(i = 1; i <= maxNumbers; i++){
+    if(originalValue == i) continue;
+    sudokuFields[xCord][yCord].value = i;  
+    if(validateRow(xCord, yCord, sudokuFields) == 1){
+      possibleNumbers[neededNumberCount] = i;
+      neededNumberCount++;
+      possibleNumbers = (int *)realloc(possibleNumbers, neededNumberCount);
+      printf("\n\n %i %i %i\n", neededNumberCount, *(possibleNumbers + neededNumberCount), i);
+    }
+  }
+
+  /*for(i = 0; i < neededNumberCount; i++){
+    printf("%i ", possibleNumbers[i]);
+  }*/
+  system("pause");
 }
 
