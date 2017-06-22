@@ -2,13 +2,13 @@
 #include<stdarg.h>
 #include<stdlib.h>
 #include<string.h>
-
+#include "UILogic_Timo_Header.c"
 //Funcionprototypes
-void readUsername(char cUsername[]);
+/*void readUsername(char cUsername[]);
 void readPassword(char cPassword[]);
 void Login();
 void Register();
-void getHighscore(int user_id);
+void getHighscore(int user_id);*/
 
 //Design-Functionprototypes
 void showStartScreen(int iSelector);
@@ -20,9 +20,11 @@ void printInputPasswordRepeat();
 
 void showDifficulty();
 void showLoggedInStartScreen();
-void showHighscores(char cHighscorer[]);
+void showHighscores(char cHighscore[]);
 void printErrorMessage(char cErrorMessage[]);
 void printSuccessMessage(char cSuccessMessage[]);
+
+int iLoggedInUserId;
 
 int main()
 {
@@ -38,23 +40,17 @@ int main()
 Function readUsername()
 given Parameters: -
 return Value: -
-Description: Reads the input of the user and returns it (to save it in
-			 a variable)
+Description: Reads the input of the user and puts it into a char array
 -------------------------------------------------------------------------
 */
 void readUsername(char *cUsername)
 {
-	char cUsername[] = "";
-	char *cUsernamePtr;
-	cUsernamePtr = &cUsername[0];
 	int iError;
 	do
 	{
 		fflush(stdin);
 		iError = scanf("%s", &cUsername[0]);
 	}while(iError == 0 || strcmp(cUsername,"") == 0);
-
-	return *cUsernamePtr;
 }
 
 /*
@@ -62,8 +58,7 @@ void readUsername(char *cUsername)
 Function readPassword()
 given Parameters: -
 return Value: -
-Description: Reads the input of the user and returns it (to save it in
-			 a variable)
+Description: Reads the input of the user and puts it into a char array
 -------------------------------------------------------------------------
 */
 void readPassword(char *cPassword) //readPasswordRepeat?
@@ -101,15 +96,16 @@ void Login()
 
 		/*Database Query Method
 	
-		if (Query found something)
+		if (iLoggedInUserId != 0 && iLoggedInUserId != null)
 		{
 			showLoggedInStartScreen();
+			iStayInMethod = 1;
 		}
 
 		else
 		{
 			printErrorMessage("Benutzername oder Passwort ist falsch. 
-			Wenn du es erneut versuchen mÃ¶chtest, drÃ¼cke Enter.");
+			Wenn Sie es erneut versuchen möchten, drücke Enter.");
 
 			navigation(cKeyPressed);
 
@@ -132,7 +128,7 @@ void Login()
 Function Register()
 given Parameters: -
 return Value: -
-Description: Goes through the task of resgistering (console 
+Description: Goes through the task of registering (console 
 			 as well as the logic behind it)
 -------------------------------------------------------------------------
 */
@@ -158,6 +154,7 @@ void Register()
 
 			if userDoesNotExist
 			{
+				INSERT QUERY
 				printSuccessMessage("Dein Benutzer wurde erfolgreich 
 				angelegt.");
 				showStartScreen();
@@ -167,7 +164,7 @@ void Register()
 			{
 				printErrorMessage("Dieser Benutzer existiert bereits. 
 				Wenn Sie es mit einem anderen Benutzernamen erneut
-				versuche mÃ¶chten, drÃ¼cken Sie Enter.");
+				versuche möchten, drücken Sie Enter.");
 
 				navigation(cKeyPressed);
 
@@ -186,8 +183,8 @@ void Register()
 
 		else
 		{
-			printErrorMessage("PasswÃ¶rter stimmen nicht Ã¼berein. Wenn Sie es erneut\
-							  versuche mÃ¶chten, drÃ¼cken Sie Enter.");
+			printErrorMessage("Passwörter stimmen nicht überein. Wenn Sie es erneut\
+							  versuche möchten, drücken Sie Enter.");
 		
 
 			/*navigation(cKeyPressed);
@@ -235,7 +232,7 @@ void getHighscore(int user_id)
 
 	else
 	{
-		printErrorMessage("Sie mÃ¼ssen eingeloggt sein, um diesen Bereich sehen zu kÃ¶nnen.");
+		printErrorMessage("Sie müssen eingeloggt sein, um diesen Bereich sehen zu können.");
 	}
 	*/
 }
