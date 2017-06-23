@@ -302,15 +302,6 @@ void handleLogin()
 }
 
 /*
--------------------------------------------------------------------------
-Function handleRegistration()
-given Parameters: -
-return Value: -
-Description: Goes through the task of resgistering (console 
-			 as well as the logic behind it)
--------------------------------------------------------------------------
-*/
-/*
 * =============================================================================
 * ****handleRegistration()****
 * Parameter: -
