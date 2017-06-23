@@ -100,7 +100,7 @@ int areAllFieldsFilledOut(sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU
   int i, j;
 
   for(i = 0; i < SUDOKU_FIELDS_X_AXIS; i++){
-    for(j = 0; i < SUDOKU_FIELDS_Y_AXIS; j++){
+    for(j = 0; j < SUDOKU_FIELDS_Y_AXIS; j++){
       if(sudokuFields[i][j].value == 0){
         return 0;
       }
@@ -143,7 +143,7 @@ int validateRow(int rowXIndex, int rowYIndex, sudoku_field sudokuFields[SUDOKU_F
 
     if(currentValue == 0) continue;
 
-		valueIndex = currentValue == 0 ? 0 : currentValue - 1;
+    valueIndex = currentValue - 1;
 		if(existingValuesHorizontal[valueIndex] == 1){
 			return 0;
 		}else{
@@ -211,21 +211,23 @@ Return: Returns 1 if all fields are valid and 0 if not.
 Description: Validates that each number from 1-9 is existing once in the 3x3 fields.
 **/
 int validateFields(sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]){
-	int iX, iY, rc;
+	int iX, iY;
 
 	for(iX = 0; iX < SUDOKU_FIELDS_X_AXIS; iX+=3){
 		for(iY = 0; iY < SUDOKU_FIELDS_Y_AXIS; iY+=3){
-			rc = validateField(iX, iY, sudokuFields);
+      if(validateField(iX, iY, sudokuFields) == 0){
+        return 0;
+      }
 		}
 	}
-	return rc;
+	return 1;
 }
 
 void getPossibleNumbersForField(
   int xCord, 
   int yCord, 
   sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS],
-  int *possibleNumbersArray,
+  int *possibleNumbersPtr,
   int *arraySize
 ){
   int *possibleNumbers = NULL, maxNumbers = 9, neededNumberCount = 0, i = 0, originalValue;
@@ -258,8 +260,8 @@ void getPossibleNumbersForField(
   // reset the field to the original value
   sudokuFields[xCord][yCord].value = originalValue;
   
-  possibleNumbersArray = possibleNumbers;
-  arraySize = &neededNumberCount;
+  possibleNumbersPtr = possibleNumbers;
+  *(arraySize) = neededNumberCount;
 }
 
 void solveSudoku(int searchFieldDirection, int currentXPos, int currentYPos, sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]){
