@@ -205,3 +205,107 @@ int validateFields(sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS
 	return rc;
 }
 
+void getPossibleNumbersForField(
+  int xCord,
+  int yCord,
+  sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]
+){
+  int maxNumbers = 9, firstNumber = 1, i = 0, originalValue;
+  originalValue = sudokuFields[xCord][yCord].value;
+
+  for(i = 1; i <= maxNumbers; i++){
+    // skip the entered value
+    if(originalValue == i) continue;
+
+    // assign temporary value to the current field to check if its valid
+    sudokuFields[xCord][yCord].value = i;
+
+    // if the value is valid, expand the array for the possible numbers
+    // and add the number to the array
+    // =>continue with the next number
+    if(
+      validateRow(xCord, yCord, sudokuFields) == 1 &&
+      validateField((xCord / 3) * 3, (yCord / 3) * 3, sudokuFields) == 1
+      ){
+      if(firstNumber == 1){
+        printf("%i ", i);
+        firstNumber = 0;
+      } else{
+        printf(", %i", i);
+      }
+    }
+  }
+  // reset the field to the original value
+  sudokuFields[xCord][yCord].value = originalValue;
+}
+
+void solveSudoku(int direction, int currentXPos, int currentYPos, sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]){
+  // wenn searchFieldDirection -1 -> gehe ein Feld nach links 
+  // wenn searchFieldDirection 1 -> gehe ein Feld nach rechts
+  int i = 0, originalValue, newXPos = currentXPos, newYPos = currentYPos, maxNumbers = 9;
+
+  originalValue = sudokuFields[currentXPos][currentYPos].value == 0 ?
+    1 : sudokuFields[currentXPos][currentYPos].value;
+  printf("start %i %i \n", newXPos, newYPos);
+  for(i = originalValue; i <= maxNumbers; i++){
+    sudokuFields[currentXPos][currentYPos].value = i;
+    if(
+      validateRow(currentXPos, currentYPos, sudokuFields) == 1 &&
+      validateField((currentXPos / 3) * 3, (currentYPos / 3) * 3, sudokuFields)
+      ){
+      if(
+        (newXPos + 1) < SUDOKU_FIELDS_X_AXIS
+        ){
+        newXPos++;
+      } else if(
+        (newXPos + 1) == SUDOKU_FIELDS_X_AXIS &&
+        (newYPos + 1) < SUDOKU_FIELDS_Y_AXIS
+        ){
+        newXPos = 0;
+        newYPos++;
+      } else if(
+        (newXPos + 1) == SUDOKU_FIELDS_X_AXIS &&
+        (newYPos + 1) == SUDOKU_FIELDS_Y_AXIS
+        ){
+        newXPos = 0;
+        newYPos = 0;
+      }
+      direction = 1;
+      break;
+    } else{
+      direction = -1;
+    }
+
+    if((i + 1) == maxNumbers && originalValue != 1){
+      i = 1;
+      maxNumbers = originalValue - 1;
+    }
+  }
+
+  if(newYPos == currentYPos && newXPos == currentXPos){
+    if(
+      (newXPos - 1) > 0
+      ){
+      newXPos--;
+    } else if(
+      (newXPos - 1) < 0 &&
+      (newYPos - 1) >= 0
+      ){
+      newXPos = SUDOKU_FIELDS_X_AXIS - 1;
+      newYPos--;
+    } else if(
+      (newXPos - 1) == 0 &&
+      (newYPos - 1) == 0
+      ){
+      newYPos = SUDOKU_FIELDS_Y_AXIS - 1;
+      newXPos = SUDOKU_FIELDS_X_AXIS - 1;
+    }
+  }
+  printf("end %i %i \n", newXPos, newYPos);
+
+  printField(sudokuFields);
+  system("pause");
+  if(validateSudoku(sudokuFields) == 0){
+    solveSudoku(direction, newXPos, newYPos, sudokuFields);
+  }
+}

@@ -1,6 +1,4 @@
 #include "../inc/ui_logic.h"
-#include "../inc/sudoku.h"
-#include "../inc/login.h"
 
 void help(int xPosition, int yPosition, sudoku_field field[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]){
    char cPossibilities[30];
@@ -230,7 +228,7 @@ int loggedInMenu(){
 				case 0: sudokuControls(); break;//Game(); break; //starts game
 				case 1: system("cls"); getHighscoreTable();  navigation(cKeyboardInput); break;//Highscores(); break; //shows highscore
 				case 2: printSudokuRules(); break;//Rules(); break; //shows rules
-				case 3: iUserId = -1; return 1; //Logout(); break; //logs out
+				case 3: iUserId = 0; return 1; //Logout(); break; //logs out
 				case 4: exit(0); //exits program
 				default: //printErrorMessage("Error! Incorrect Input!"); break;
 				   break;
@@ -381,7 +379,7 @@ void handleLogin()
 
 		if (iUserId != 0)
 		{
-			showLoggedInStartScreen();
+			loggedInMenu();
 			iStayInMethod = 1;
 		}
 
@@ -427,7 +425,7 @@ void handleRegistration()
 
 	do
 	{
-		printRegister();
+		printRegistration();
 		printInputUsername();
 		readUsername(cUsername);
 		printInputPassword();
@@ -437,19 +435,18 @@ void handleRegistration()
 
 		if (strcmp(cPassword, cPasswordRepeat) == 0) //if equal
 		{
-			iTestUserExisting=testIfUserNameExists(cName);
+			iTestUserExisting=testIfUserNameExists(cUsername);
 			if(iTestUserExisting==0) {
-				insertNewUser(cName, cPasswort);
+				insertNewUser(cUsername, cPassword);
 				iStayInMethod = 1;
-				printSuccessMessage("Dein Benutzer wurde erfolgreich\
-				angelegt.");
+				printSuccessMessage("Dein Benutzer wurde erfolgreich angelegt.");
 				system("pause");
-				showStartScreen();
+				loggedInMenu();
 			}
 			else if(iTestUserExisting == 1){
-				printErrorMessage("Dieser Benutzer existiert bereits.\
-				Wenn Sie es mit einem anderen Benutzernamen erneut\
-				versuche mÃ¶chten, drÃ¼cken Sie Enter.");
+				printErrorMessage("Dieser Benutzer existiert bereits."\
+				"Wenn Sie es mit einem anderen Benutzernamen erneut"\
+				"versuche mÃ¶chten, drÃ¼cken Sie Enter.");
 
 				navigation(cKeyPressed);
 
@@ -467,8 +464,8 @@ void handleRegistration()
 
 		else
 		{
-			printErrorMessage("PasswÃ¶rter stimmen nicht Ã¼berein. Wenn Sie es erneut\
-							  versuchen mÃ¶chten, drÃ¼cken Sie Enter.");
+			printErrorMessage("PasswÃ¶rter stimmen nicht Ã¼berein. Wenn Sie es erneut"\
+							  "versuchen mÃ¶chten, drÃ¼cken Sie Enter.");
 		
 
 			navigation(cKeyPressed);
@@ -485,6 +482,7 @@ void handleRegistration()
 
 		}
 	} while (iStayInMethod == 0);
+}
 
 void navigation(char cKeyPressed[])
 {
@@ -504,21 +502,45 @@ void navigation(char cKeyPressed[])
 			}
 			switch (ch) //Giving "cKeyPressed" the right content
 			{
-        case 72: {strcpy(cKeyPressed, "UP"); loop=1; break;}; //Setting "loop" on to 1
-        case 80: {strcpy(cKeyPressed, "DOWN"); loop=1; break;};//to brake the while loop
-        case 75: {strcpy(cKeyPressed, "LEFT"); loop=1; break;};
-        case 77: {strcpy(cKeyPressed, "RIGHT"); loop=1; break;};
-        case 8: {strcpy(cKeyPressed, "RETURN"); loop=1; break;};
-        case 27: {strcpy(cKeyPressed, "ESC"); loop=1; break;};
-        case 13: {strcpy(cKeyPressed, "ENTER"); loop=1; break;};
-        case 59: {strcpy(cKeyPressed, "F1"); loop=1; break;};
+        case 72: 
+          strcpy(cKeyPressed, "UP");
+          loop=1;//Setting "loop" on to 1 
+          break;
+        case 80: 
+          strcpy(cKeyPressed, "DOWN");
+          loop=1;//to brake the while loop 
+          break;
+        case 75: 
+          strcpy(cKeyPressed, "LEFT");
+          loop=1;
+          break;
+        case 77: 
+          strcpy(cKeyPressed, "RIGHT");
+          loop=1;
+          break;
+        case 8: 
+          strcpy(cKeyPressed, "RETURN");
+          loop=1; 
+          break;
+        case 27: 
+          strcpy(cKeyPressed, "ESC");
+          loop=1;
+          break;
+        case 13: 
+          strcpy(cKeyPressed, "ENTER");
+          loop=1; 
+          break;
+        case 59: 
+          strcpy(cKeyPressed, "F1");
+          loop=1; 
+          break;
 			  default:
 			     if(ch>48&&59>ch){
                  numinput[0]=ch;
                  numinput[1]='\0';
                  strcpy(cKeyPressed, numinput);
 			     }
-              loop=1;
+          loop=1;
 				  break;
 			}
 		}

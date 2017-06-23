@@ -25,13 +25,15 @@ void printSudokuRules() {
 }
 
 void center(char message[]){
-   int iWidth = 157;
+   int iWidth = 157, iNeededSpace;
    int i = 0;
    char* cNewString[300];
 
    int iOldStringLength = (int)strlen(message);
 
-   char cSpaces[((iWidth/2)-(iOldStringLength/2))+1];
+   char *cSpaces;
+   iNeededSpace = (iWidth / 2) - (iOldStringLength / 2);
+   cSpaces = malloc(iNeededSpace * sizeof(char));
 
    for(i=0;i<((iWidth/2)-(iOldStringLength/2));i++){
       cSpaces[i] = ' ';
@@ -110,7 +112,7 @@ void printErrorMessage(char *cError)
 	lineBreaks();
 	quadWhiteSpace();
 	quadWhiteSpace();
-	printf("Es ist ein Fehler aufgetreten: %c", cError);
+	printf("Es ist ein Fehler aufgetreten: %s", cError);
 }
 
 //*****************************************************************************
