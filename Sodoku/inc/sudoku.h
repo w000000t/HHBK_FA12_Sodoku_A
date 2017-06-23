@@ -11,9 +11,11 @@ int validateSudoku(sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS
 int validateRow(int rowXIndex, int rowYIndex, sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]);
 int validateRows(sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]);
 int validateField();
-int getPossibleNumbersForField(
+void getPossibleNumbersForField(
   int xCord, 
   int yCord, 
-  sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]
+  sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS],
+  int *possibleNumbersArray,
+  int *arraySize
 );
 #endif
