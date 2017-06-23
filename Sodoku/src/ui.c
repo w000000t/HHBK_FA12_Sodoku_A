@@ -11,7 +11,7 @@
 //*****************************************************************************
 void bigWhiteSpace()
 {
-	printf("\t\t\t\t\t\t\t\t\t");// 9 Tabstops
+    printf("\t\t\t\t\t\t\t\t\t");// 9 Tabstops
 }
 
 //*****************************************************************************
@@ -21,7 +21,7 @@ void bigWhiteSpace()
 //*****************************************************************************
 void whiteSpace()
 {
-	printf("\t");
+    printf("\t");
 }
 
 //*****************************************************************************
@@ -31,7 +31,7 @@ void whiteSpace()
 //*****************************************************************************
 void quadWhiteSpace()
 {
-	printf("\t\t\t\t");
+    printf("\t\t\t\t");
 }
 
 //*****************************************************************************
@@ -41,9 +41,9 @@ void quadWhiteSpace()
 //*****************************************************************************
 void hexaWhiteSpace()
 {
-	quadWhiteSpace();
-	whiteSpace();
-	whiteSpace();
+    quadWhiteSpace();
+    whiteSpace();
+    whiteSpace();
 }
 
 //*****************************************************************************
@@ -53,7 +53,7 @@ void hexaWhiteSpace()
 //*****************************************************************************
 void lineBreaks()
 {
-	printf("\n\n");
+    printf("\n\n");
 }
 
 //*****************************************************************************
@@ -63,10 +63,10 @@ void lineBreaks()
 //*****************************************************************************
 void printErrorMessage(char *cError)
 {
-	lineBreaks();
-	quadWhiteSpace();
-	quadWhiteSpace();
-	printf("Es ist ein Fehler aufgetreten: %c", cError);
+    lineBreaks();
+    quadWhiteSpace();
+    quadWhiteSpace();
+    printf("Es ist ein Fehler aufgetreten: %c", cError);
 }
 
 //*****************************************************************************
@@ -76,28 +76,28 @@ void printErrorMessage(char *cError)
 //*****************************************************************************
 void showStartScreen(int iSelector)
 {
-	system("cls");
-	lineBreaks();
-	bigWhiteSpace();
-	printf("	Sudoku");
-	lineBreaks();
-	bigWhiteSpace();
-	printf("    Schnelles Spiel");
-	printSelector(1, iSelector);
-	lineBreaks();
-	bigWhiteSpace();
-	whiteSpace();
-	printf(" Login");
-	printSelector(2, iSelector);
-	lineBreaks();
-	bigWhiteSpace();
-	printf("     Registrieren");
-	printSelector(3, iSelector);
-	lineBreaks();
-	bigWhiteSpace();
-	printf("	Beenden");
-	printSelector(4, iSelector);
-	lineBreaks();
+    system("cls");
+    lineBreaks();
+    bigWhiteSpace();
+    printf("	Sudoku");
+    lineBreaks();
+    bigWhiteSpace();
+    printf("    Schnelles Spiel");
+    printSelector(1, iSelector);
+    lineBreaks();
+    bigWhiteSpace();
+    whiteSpace();
+    printf(" Login");
+    printSelector(2, iSelector);
+    lineBreaks();
+    bigWhiteSpace();
+    printf("     Registrieren");
+    printSelector(3, iSelector);
+    lineBreaks();
+    bigWhiteSpace();
+    printf("	Beenden");
+    printSelector(4, iSelector);
+    lineBreaks();
 }
 
 //*****************************************************************************
@@ -107,10 +107,10 @@ void showStartScreen(int iSelector)
 //*****************************************************************************
 void printLogin()
 {
-	system("cls");
-	lineBreaks();
-	bigWhiteSpace();
-	printf("     Login");
+    system("cls");
+    lineBreaks();
+    bigWhiteSpace();
+    printf("     Login");
 }
 
 //*****************************************************************************
@@ -120,10 +120,10 @@ void printLogin()
 //*****************************************************************************
 void printRegistration()
 {
-	system("cls");
-	lineBreaks();
-	bigWhiteSpace();
-	printf("Registrierung");
+    system("cls");
+    lineBreaks();
+    bigWhiteSpace();
+    printf("Registrierung");
 }
 
 //*****************************************************************************
@@ -133,11 +133,11 @@ void printRegistration()
 //*****************************************************************************
 void printInputUsername()
 {
-	lineBreaks();
-	quadWhiteSpace();
-	quadWhiteSpace();
-	printf("Bitte geben sie Ihren Username ein:\n");
-	bigWhiteSpace();
+    lineBreaks();
+    quadWhiteSpace();
+    quadWhiteSpace();
+    printf("Bitte geben sie Ihren Username ein:\n");
+    bigWhiteSpace();
 }
 
 //*****************************************************************************
@@ -147,11 +147,11 @@ void printInputUsername()
 //*****************************************************************************
 void printInputPassword()
 {
-	lineBreaks();
-	quadWhiteSpace();
-	quadWhiteSpace();
-	printf(" Bitte geben sie Ihr Passwort ein:\n");
-	bigWhiteSpace();
+    lineBreaks();
+    quadWhiteSpace();
+    quadWhiteSpace();
+    printf(" Bitte geben sie Ihr Passwort ein:\n");
+    bigWhiteSpace();
 }
 
 //*****************************************************************************
@@ -161,19 +161,19 @@ void printInputPassword()
 //*****************************************************************************
 void printInputPasswordRepeat()
 {
-	lineBreaks();
-	quadWhiteSpace();
-	quadWhiteSpace();
-	printf("Bitte wiederholen sie das Passwort:\n");
-	bigWhiteSpace();
+    lineBreaks();
+    quadWhiteSpace();
+    quadWhiteSpace();
+    printf("Bitte wiederholen sie das Passwort:\n");
+    bigWhiteSpace();
 }
 
 void printSuccessMessage(char cUsername)
 {
-	lineBreaks();
-	bigWhiteSpace();
-	whiteSpace();
-	printf("Ihr Username ist: %c", cUsername);
+    lineBreaks();
+    bigWhiteSpace();
+    whiteSpace();
+    printf("Ihr Username ist: %c", cUsername);
 }
 
 //*****************************************************************************
@@ -183,23 +183,23 @@ void printSuccessMessage(char cUsername)
 //*****************************************************************************
 void showDifficulty(int iSelector)
 {
-	system("cls");
-	lineBreaks();
-	quadWhiteSpace();
-	quadWhiteSpace();
-	printf("    Schwierigkeitsgrad");
-	lineBreaks();
-	bigWhiteSpace();
-	printf("  Leicht");
-	printSelector(1, iSelector);
-	lineBreaks();
-	bigWhiteSpace();
-	printf("  Mittel");
-	printSelector(2, iSelector);
-	lineBreaks();
-	bigWhiteSpace();
-	printf("  Schwer");
-	printSelector(3, iSelector);
+    system("cls");
+    lineBreaks();
+    quadWhiteSpace();
+    quadWhiteSpace();
+    printf("    Schwierigkeitsgrad");
+    lineBreaks();
+    bigWhiteSpace();
+    printf("  Leicht");
+    printSelector(1, iSelector);
+    lineBreaks();
+    bigWhiteSpace();
+    printf("  Mittel");
+    printSelector(2, iSelector);
+    lineBreaks();
+    bigWhiteSpace();
+    printf("  Schwer");
+    printSelector(3, iSelector);
 }
 
 //*****************************************************************************
@@ -209,31 +209,31 @@ void showDifficulty(int iSelector)
 //*****************************************************************************
 void showLoggedInStartScreen(int iSelector)
 {
-	system("cls");
-	lineBreaks();
-	bigWhiteSpace();
-	printf("  Sudoku");
-	lineBreaks();
-	bigWhiteSpace();
-	printf("  Spielen");
-	printSelector(1, iSelector);
-	lineBreaks();
-	bigWhiteSpace();
-	printf("Bestenliste");
-	printSelector(2, iSelector);
-	lineBreaks();
-	bigWhiteSpace();
-	printf("  Regeln");
-	printSelector(3, iSelector);
-	lineBreaks();
-	bigWhiteSpace();
-	printf("  Logout");
-	printSelector(4, iSelector);
-	lineBreaks();
-	bigWhiteSpace();
-	printf("  Beenden");
-	printSelector(5, iSelector);
-	lineBreaks();
+    system("cls");
+    lineBreaks();
+    bigWhiteSpace();
+    printf("  Sudoku");
+    lineBreaks();
+    bigWhiteSpace();
+    printf("  Spielen");
+    printSelector(1, iSelector);
+    lineBreaks();
+    bigWhiteSpace();
+    printf("Bestenliste");
+    printSelector(2, iSelector);
+    lineBreaks();
+    bigWhiteSpace();
+    printf("  Regeln");
+    printSelector(3, iSelector);
+    lineBreaks();
+    bigWhiteSpace();
+    printf("  Logout");
+    printSelector(4, iSelector);
+    lineBreaks();
+    bigWhiteSpace();
+    printf("  Beenden");
+    printSelector(5, iSelector);
+    lineBreaks();
 }
 
 //*****************************************************************************
@@ -243,24 +243,24 @@ void showLoggedInStartScreen(int iSelector)
 //*****************************************************************************
 void printFieldHorizontal()
 {
-	int iCounter = 9;
-	while(iCounter > 0)
-	{
-		printf("\xC5\xC4\xC4\xC4\xC4\xC4\xC4");
-    iCounter--;
-	}
+    int iCounter = 9;
+    while(iCounter > 0)
+    {
+        printf("\xC5\xC4\xC4\xC4\xC4\xC4\xC4");
+        iCounter--;
+    }
 
-	printf("\xC5\n");
+    printf("\xC5\n");
 }
 
 void showPauseMenu()
 {
-	bigWhiteSpace();
-	printf("Back to game");
-	bigWhiteSpace();
-	printf("Show solution");
-	bigWhiteSpace();
-	printf("Exit");
+    bigWhiteSpace();
+    printf("Back to game");
+    bigWhiteSpace();
+    printf("Show solution");
+    bigWhiteSpace();
+    printf("Exit");
 }
 
 //*****************************************************************************
@@ -270,39 +270,39 @@ void showPauseMenu()
 //*****************************************************************************
 void printField(sudoku_field sudoku_fields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS])
 {
-	/*sudoku_field sudoku_fields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS];*/
-	int i,j;
+    /*sudoku_field sudoku_fields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS];*/
+    int i,j;
 
-	for(i = 0; i < SUDOKU_FIELDS_X_AXIS; i++){
-		hexaWhiteSpace();
-		printFieldHorizontal();
-		hexaWhiteSpace();
-		for(j = 0; j < SUDOKU_FIELDS_Y_AXIS; j++){
+    for(i = 0; i < SUDOKU_FIELDS_X_AXIS; i++){
+        hexaWhiteSpace();
+        printFieldHorizontal();
+        hexaWhiteSpace();
+        for(j = 0; j < SUDOKU_FIELDS_Y_AXIS; j++){
 
-			if ( sudoku_fields[i][j].value == 0)
-			{
-				printf("\xB3      ");
-			}
-			else
-			{
-				printf("\xB3  %i   ", sudoku_fields[i][j].value);
-			}
-		}
-		printf("\xB3\n");
-	}
+            if ( sudoku_fields[i][j].value == 0)
+            {
+                printf("\xB3      ");
+            }
+            else
+            {
+                printf("\xB3  %i   ", sudoku_fields[i][j].value);
+            }
+        }
+        printf("\xB3\n");
+    }
 
-	hexaWhiteSpace();
-	printFieldHorizontal();
-	hexaWhiteSpace();
-	printf("Hilfe");
-	hexaWhiteSpace();
-	whiteSpace();
-	printf("  Beenden\n");
-	hexaWhiteSpace();
-	printf("F1");
-	hexaWhiteSpace();
-	whiteSpace();
-	printf("  ESC\n");
+    hexaWhiteSpace();
+    printFieldHorizontal();
+    hexaWhiteSpace();
+    printf("Hilfe");
+    hexaWhiteSpace();
+    whiteSpace();
+    printf("  Beenden\n");
+    hexaWhiteSpace();
+    printf("F1");
+    hexaWhiteSpace();
+    whiteSpace();
+    printf("  ESC\n");
 
 }
 
@@ -322,28 +322,37 @@ void showHighscore(){
 
 void printSelector(int iPosition, int iSelector)
 {
-	if (iPosition - 1 == iSelector)
-	{
-		printf("\t<-");
-	}
+    if (iPosition - 1 == iSelector)
+    {
+        printf("\t<-");
+    }
 }
 
 void showIntro()
 {
-	system("cls");
-	printf(" .----------------.  .----------------.  .----------------.  .----------------.  .----------------.  .----------------. \n");
-	printf("| .--------------. || .--------------. || .--------------. || .--------------. || .--------------. || .--------------. |\n");
-	printf("| |    _______   | || | _____  _____ | || |  ________    | || |     ____     | || |  ___  ____   | || | _____  _____ | |\n");
-	printf("| |   /  ___  |  | || ||_   _||_   _|| || | |_   ___ `.  | || |   .'    `.   | || | |_  ||_  _|  | || ||_   _||_   _|| |\n");
-	printf("| |  |  (__ \_|  | || |  | |    | |  | || |   | |   `. \ | || |  /  .--.  \  | || |   | |_/ /    | || |  | |    | |  | |\n");
-	printf("| |   '.___`-.   | || |  | '    ' |  | || |   | |    | | | || |  | |    | |  | || |   |  __'.    | || |  | '    ' |  | |\n");
-	printf("| |  |`\____) |  | || |   \ `--' /   | || |  _| |___.' / | || |  \  `--'  /  | || |  _| |  \ \_  | || |   \ `--' /   | |\n");
-	printf("| |  |_______.'  | || |    `.__.'    | || | |________.'  | || |   `.____.'   | || | |____||____| | || |    `.__.'    | |\n");
-	printf("| |              | || |              | || |              | || |              | || |              | || |              | |\n");
-	printf("| '--------------' || '--------------' || '--------------' || '--------------' || '--------------' || '--------------' |\n");
-	printf(" '----------------'  '----------------'  '----------------'  '----------------'  '----------------'  '----------------' \n");
-	Sleep(5000);
+    system("cls");
+    printf(" .----------------.  .----------------.  .----------------.  .----------------.  .----------------.  .----------------. \n");
+    printf("| .--------------. || .--------------. || .--------------. || .--------------. || .--------------. || .--------------. |\n");
+    printf("| |    _______   | || | _____  _____ | || |  ________    | || |     ____     | || |  ___  ____   | || | _____  _____ | |\n");
+    printf("| |   /  ___  |  | || ||_   _||_   _|| || | |_   ___ `.  | || |   .'    `.   | || | |_  ||_  _|  | || ||_   _||_   _|| |\n");
+    printf("| |  |  (__ \_|  | || |  | |    | |  | || |   | |   `. \ | || |  /  .--.  \  | || |   | |_/ /    | || |  | |    | |  | |\n");
+    printf("| |   '.___`-.   | || |  | '    ' |  | || |   | |    | | | || |  | |    | |  | || |   |  __'.    | || |  | '    ' |  | |\n");
+    printf("| |  |`\____) |  | || |   \ `--' /   | || |  _| |___.' / | || |  \  `--'  /  | || |  _| |  \ \_  | || |   \ `--' /   | |\n");
+    printf("| |  |_______.'  | || |    `.__.'    | || | |________.'  | || |   `.____.'   | || | |____||____| | || |    `.__.'    | |\n");
+    printf("| |              | || |              | || |              | || |              | || |              | || |              | |\n");
+    printf("| '--------------' || '--------------' || '--------------' || '--------------' || '--------------' || '--------------' |\n");
+    printf(" '----------------'  '----------------'  '----------------'  '----------------'  '----------------'  '----------------' \n");
+    Sleep(5000);
 }
 
 
+void printSudokuRules() {
 
+    printf("\t\t\t\t Spielregeln\n\n");
+    printf("In jeder Zeile duerfen die Ziffern von 1 bis 9 nur einmal "
+                   "vorkommen\n");
+    printf("In jeder Spalte duerfen die Ziffern von 1 bis 9 nur einmal "
+                   "vorkommen\n");
+    printf("In jedem Block duerfen die Ziffern von 1 bis 9 nur einmal"
+            " vorkommen\n");
+}
