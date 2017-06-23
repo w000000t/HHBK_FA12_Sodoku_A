@@ -87,16 +87,26 @@ Parameters: sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]
 Return: Returns 1 if the sudoku is valid and 0 if its not
 **/
 int validateSudoku(sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]){
-  int rowsValid = 0, boxesValid = 0;
+  int rowsValid = 0, boxesValid = 0, allFieldsUsed = 0;
   
   rowsValid = validateRows(sudokuFields);
   boxesValid = validateFields(sudokuFields);
+  allFieldsUsed = areAllFieldsFilledOut(sudokuFields);
 
-  if(rowsValid == 1 && boxesValid == 1){
-	return 1;
-  }else{
-	return 0;
+  return (rowsValid == 1 && boxesValid == 1 && allFieldsUsed == 1) ? 1 : 0;
+}
+
+int areAllFieldsFilledOut(sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]){
+  int i, j;
+
+  for(i = 0; i < SUDOKU_FIELDS_X_AXIS; i++){
+    for(j = 0; i < SUDOKU_FIELDS_Y_AXIS; j++){
+      if(sudokuFields[i][j].value == 0){
+        return 0;
+      }
+    }
   }
+  return 1;
 }
 
 /**
@@ -178,7 +188,9 @@ int validateField(int topLeftXIndex, int topLeftYIndex, sudoku_field sudokuField
 		for(iY = topLeftYIndex; iY < topLeftYIndex + 3; iY++){
 			currentValue = sudokuFields[iX][iY].value;
 
-			valueIndex = currentValue == 0 ? 0 : currentValue - 1;
+      if(currentValue == 0) continue;
+
+      valueIndex = currentValue - 1;
 
 			if(existingValues[valueIndex] == 1){
 				return 0;
@@ -209,12 +221,14 @@ int validateFields(sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS
 	return rc;
 }
 
-int getPossibleNumbersForField(
+void getPossibleNumbersForField(
   int xCord, 
   int yCord, 
-  sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]
+  sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS],
+  int *possibleNumbersArray,
+  int *arraySize
 ){
-  int *possibleNumbers = NULL, maxNumbers = 9, neededNumberCount = 0, i, originalValue;
+  int *possibleNumbers = NULL, maxNumbers = 9, neededNumberCount = 0, i = 0, originalValue;
   originalValue = sudokuFields[xCord][yCord].value;
 
   possibleNumbers = (int *)malloc(sizeof(int));
@@ -222,22 +236,48 @@ int getPossibleNumbersForField(
   if(possibleNumbers == NULL){
     printf("Failed to allocate memory");
     system("pause");
+    exit(-1);
   }
 
   for(i = 1; i <= maxNumbers; i++){
+    // skip the entered value
     if(originalValue == i) continue;
-    sudokuFields[xCord][yCord].value = i;  
-    if(validateRow(xCord, yCord, sudokuFields) == 1){
+
+    // assign temporary value to the current field to check if its valid
+    sudokuFields[xCord][yCord].value = i; 
+
+    // if the value is valid, expand the array for the possible numbers
+    // and add the number to the array
+    // => continue with the next number
+    if(validateRow(xCord, yCord, sudokuFields) == 1 && validateField(xCord, yCord, sudokuFields) == 1){
       possibleNumbers[neededNumberCount] = i;
       neededNumberCount++;
-      possibleNumbers = (int *)realloc(possibleNumbers, neededNumberCount);
-      printf("\n\n %i %i %i\n", neededNumberCount, *(possibleNumbers + neededNumberCount), i);
+      possibleNumbers = (int *)realloc(possibleNumbers, neededNumberCount * sizeof(int));
+    }
+  }
+  // reset the field to the original value
+  sudokuFields[xCord][yCord].value = originalValue;
+  
+  possibleNumbersArray = possibleNumbers;
+  arraySize = &neededNumberCount;
+}
+
+void solveSudoku(int searchFieldDirection, int currentXPos, int currentYPos, sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]){
+  int newFieldValue = 0, i;
+
+  while(sudokuFields[currentXPos][currentYPos].value != 0 || sudokuFields[currentXPos][currentYPos].disabled == 1){
+    currentXPos += searchFieldDirection;
+    currentYPos += searchFieldDirection;
+  }
+
+  for(i = 1; i <= 9; i++){
+    sudokuFields[currentXPos][currentYPos].value = i;
+
+    if(validateRow(currentXPos, currentYPos, sudokuFields) == 1 && validateField((currentXPos / 3) * 3, (currentYPos / 3) * 3, sudokuFields) == 1) {
+      solveSudoku(1/*search next free field 1 step*/, currentXPos, currentYPos, sudokuFields);
+      break;
     }
   }
 
-  /*for(i = 0; i < neededNumberCount; i++){
-    printf("%i ", possibleNumbers[i]);
-  }*/
-  system("pause");
+  
 }
-
