@@ -5,6 +5,7 @@
 #include "constants.h"
 #include "customTypes\sudoku_field.h"
 
+void center(char *cMessage)
 void bigWhiteSpace();
 void whiteSpace();
 void quadWhiteSpace();
@@ -17,7 +18,7 @@ void printRegistration();
 void printInputUsername();
 void printInputPassword();
 void printInputPasswordRepeat();
-void printSuccessMessage(char cUsername);
+void printSuccessMessage(char* cUsername);
 void showDifficulty(int iSelector);
 void showLoggedInStartScreen(int iSelector);
 void printFieldHorizontal();
