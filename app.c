@@ -8,13 +8,18 @@
 #include "inc/ui_logic.h"
 
 int main(void){
+  SMALL_RECT windowSize = {0,0,156,78};
+
+  BOOL ok;
+
   COORD screenSize;
   screenSize.X = 157;
   screenSize.Y = 79;
 
-  SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), screenSize);
+  ok=SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), screenSize);
+  SetConsoleWindowInfo(GetStdHandle(STD_OUTPUT_HANDLE), ok, &windowSize);
 
-  mainMenu();
-	system("pause");
-	return 0;
+  showIntro();
+  system("pause");
+  return 0;
 }
