@@ -2,46 +2,20 @@
 #include "../inc/sudoku.h"
 #include "../inc/login.h"
 
-int getPossibleNumbers(int xPosition, int yPosition, sudoku_field field[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS], int iPossibilities[10]){
-
-   iPossibilities[0] = 1;
-   iPossibilities[1] = 2;
-   iPossibilities[2] = 3;
-   iPossibilities[3] = 4;
-   iPossibilities[4] = 5;
-
-   return 1;
-
-}
-
-int help(int xPosition, int yPosition, sudoku_field field[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]){
+void help(int xPosition, int yPosition, sudoku_field field[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]){
    char cPossibilities[30];
-   int iPossibilities[10];
-   int i;
+   int *iPossibilities=NULL;
+   int iSize=0;
    COORD coords;
    coords.X = 48;
    coords.Y = 22;
    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),coords);
 
-   printf("Possible numbers:");
+   printf("Moegliche Loesungen:");
 
-   getPossibleNumbers(xPosition, yPosition, field, iPossibilities);
    coords.Y = 23;
    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),coords);
-
-   for(i=0;iPossibilities[i]!=0;i++){
-      printf("%i",iPossibilities[i]);
-      if(i==0){
-         cPossibilities[i]=iPossibilities[i]+48;
-      }
-      else{
-
-         cPossibilities[(i*2)-1]=',';
-         cPossibilities[i*2]=iPossibilities[i]+48;
-      }
-   }
-
-   //printf("%s", cPossibilities);
+   getPossibleNumbersForField(xPosition, yPosition, field);
 }
 
 int pauseMenuHandler(){
@@ -78,7 +52,7 @@ int pauseMenuHandler(){
        return iChoice;
 		}
 
-   }while(strcmp(cKeyPressed, "ESC")!=0&&iChoice!=0);
+   }while((strcmp(cKeyPressed, "ESC")!=0&&strcmp(cKeyPressed, "RETURN")!=0)&&iChoice!=0);
 
    return iChoice;
 
@@ -156,7 +130,7 @@ int sudokuControls(){
          iMenuChoice = pauseMenuHandler();
 
          if(iMenuChoice==1){
-            //solveSudoku();
+            solveSudoku();
          }
          else if(iMenuChoice==2){
             return 1;
@@ -167,6 +141,15 @@ int sudokuControls(){
       else if(cKeyboardInput[0]>48&&cKeyboardInput[0]<59&&field[xPosition][yPosition].disabled!=1){
          printf("%c",cKeyboardInput[0]);
          field[yPosition][xPosition].value=cKeyboardInput[0]-48;
+
+         if(validateSudoku(field)==1)
+         {
+            //Victory fanfare
+            Beep(523, 200);
+            Beep(523, 110);
+            Beep(523, 110);
+            Beep(723, 500);
+         }
       }
 
       //Check if sudoku is solved & validate
@@ -226,7 +209,8 @@ int mainMenu(){
 			}
 		}
 
-	}while(!strcmp(cKeyboardInput, "RETURN")==0&&
+	}while((strcmp(cKeyboardInput, "RETURN")!=0&&
+         strcmp(cKeyboardInput, "ESC")!=0)&&
 		!(iSelector==4&&strcmp(cKeyboardInput, "ENTER")==0));
 	//while the user hasn't pressed return or enter on the last entry
 }
@@ -245,7 +229,7 @@ int loggedInMenu(){
 			switch(iSelector){
 				case 0: sudokuControls(); break;//Game(); break; //starts game
 				case 1: system("cls"); getHighscoreTable();  navigation(cKeyboardInput); break;//Highscores(); break; //shows highscore
-				case 2: break;//Rules(); break; //shows rules
+				case 2: printSudokuRules(); break;//Rules(); break; //shows rules
 				case 3: iUserId = -1; return 1; //Logout(); break; //logs out
 				case 4: exit(0); //exits program
 				default: //printErrorMessage("Error! Incorrect Input!"); break;
@@ -271,8 +255,7 @@ int loggedInMenu(){
 			}
 		}
 
-	}while(!strcmp(cKeyboardInput, "RETURN")==0&&
-		!(iSelector==4&&strcmp(cKeyboardInput, "ENTER")==0));
+	}while(!(iSelector==4&&strcmp(cKeyboardInput, "ENTER")==0));
 }
 
 int difficulty(){
@@ -324,6 +307,7 @@ int difficulty(){
 		}
 
 	}while(strcmp(cKeyboardInput, "RETURN")!=0&&
+        strcmp(cKeyboardInput, "ESC")!=0&&
 		iCorrectInput<=0);
 
 		return -1;
@@ -395,6 +379,8 @@ void handleLogin()
 		readPassword(cPassword);
 
 		iUserId = 2;
+
+		iStayInMethod=1;
 
 		loggedInMenu();
 
