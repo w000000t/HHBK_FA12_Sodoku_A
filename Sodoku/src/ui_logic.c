@@ -1,7 +1,65 @@
 #include "../inc/ui_logic.h"
 #include "../inc/sudoku.h"
+#include "../inc/login.h"
+
+void help(int xPosition, int yPosition, sudoku_field field[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]){
+   char cPossibilities[30];
+   int *iPossibilities=NULL;
+   int iSize=0;
+   COORD coords;
+   coords.X = 48;
+   coords.Y = 22;
+   SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),coords);
+
+   printf("Moegliche Loesungen:");
+
+   coords.Y = 23;
+   SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),coords);
+   getPossibleNumbersForField(xPosition, yPosition, field);
+}
+
+int pauseMenuHandler(){
+
+   char cKeyPressed[10];
+   int iChoice=-1;
+   int iSelector=0;
+
+   do{
+
+      showPauseMenu(iSelector);
+      navigation(cKeyPressed);
+
+      if(strcmp(cKeyPressed, "UP")==0){ //cehcks if the user pressed "up"
+			if(iSelector>0){ //checks is the selector is not on first item
+				iSelector--; //moves selector one up
+			}
+			else{
+				iSelector=2; //moves selector to the last entry
+			}
+		}
+
+		if(strcmp(cKeyPressed, "DOWN")==0){ //cehcks if the user pressed "down"
+			if(iSelector<2){//checks is the selector is not on last item
+				iSelector++; //moves selector one down
+			}
+			else{
+				iSelector=0; //moves selector to first entry
+			}
+		}
+
+		if(strcmp(cKeyPressed, "ENTER")==0){
+       iChoice=iSelector;
+       return iChoice;
+		}
+
+   }while((strcmp(cKeyPressed, "ESC")!=0&&strcmp(cKeyPressed, "RETURN")!=0)&&iChoice!=0);
+
+   return iChoice;
+
+}
 
 int sudokuControls(){
+   int redraw = 1;
    int xOffset = 51;
    int yOffset = 1;
    int xPosition = 0;
@@ -10,21 +68,44 @@ int sudokuControls(){
    int j=0;
    int xStep=7;
    int yStep=2;
+   int iMenuChoice=0;
    char cKeyboardInput[10];
    COORD coords;
    sudoku_field field[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS];
+   int iDifficulty =  difficulty();
 
-   initSudoku(1, field);
+   if(iDifficulty==-1){
+      return 1;
+   }
 
+   for(i=0;i<SUDOKU_FIELDS_X_AXIS;i++){
+      for(j=0;j<SUDOKU_FIELDS_Y_AXIS;j++){
+         field[i][j].disabled = 0;
+         field[i][j].value = 0;
+      }
+   }
    system("cls");
-   printField(field);
 
+   printField(field);
    coords.Y=yOffset+(yPosition*yStep);
    coords.X=xOffset+(xPosition*xStep);
    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),coords);
 
    do{
+
       navigation(cKeyboardInput);
+
+      if(redraw==1){
+         printField(field);
+         redraw=0;
+
+
+         coords.Y=yOffset+(yPosition*yStep);
+         coords.X=xOffset+(xPosition*xStep);
+
+         SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),coords);
+      }
+
       if(strcmp(cKeyboardInput, "UP")==0&&yPosition>0){
          yPosition--;
       }
@@ -39,12 +120,40 @@ int sudokuControls(){
       }
       else if(strcmp(cKeyboardInput, "RETURN")==0&&field[xPosition][yPosition].disabled!=1){
          printf("%c",' ');
-         field[xPosition][yPosition].value=0;
+         field[yPosition][xPosition].value=0;
+      }
+      else if(strcmp(cKeyboardInput, "F1")==0){
+         help(yPosition, xPosition, field);
+         redraw = 1;
+      }
+      else if(strcmp(cKeyboardInput, "ESC")==0){
+         iMenuChoice = pauseMenuHandler();
+
+         if(iMenuChoice==1){
+            solveSudoku();
+         }
+         else if(iMenuChoice==2){
+            return 1;
+         }
+
+         printField(field);
       }
       else if(cKeyboardInput[0]>48&&cKeyboardInput[0]<59&&field[xPosition][yPosition].disabled!=1){
          printf("%c",cKeyboardInput[0]);
-         field[xPosition][yPosition].value=cKeyboardInput[0]-48;
+         field[yPosition][xPosition].value=cKeyboardInput[0]-48;
+
+         if(validateSudoku(field)==1)
+         {
+            //Victory fanfare
+            Beep(523, 200);
+            Beep(523, 110);
+            Beep(523, 110);
+            Beep(723, 500);
+         }
       }
+
+      //Check if sudoku is solved & validate
+      //if validated, check if user is logged in
 
       coords.Y=yOffset+(yPosition*yStep);
       coords.X=xOffset+(xPosition*xStep);
@@ -55,17 +164,16 @@ int sudokuControls(){
 
 int mainMenu(){
 	int iSelector=0; //The Selector where the "cursor" currently is
-	char sKeypressed[10]; //The Array for what the user has pressed
+	char cKeyboardInput[10]; //The Array for what the user has pressed
 	do{
 
 		showStartScreen(iSelector); //shows the start screen
 
 
-		navigation(sKeypressed); //handles keyboard input
+		navigation(cKeyboardInput); //handles keyboard input
 
 
-		if(strcmp(sKeypressed, "ENTER")==0){ //checks if user selected an entry
-            printf("\nPressed Enter\n");
+		if(strcmp(cKeyboardInput, "ENTER")==0){ //checks if user selected an entry
 			switch(iSelector){
 				case 0:
 				   sudokuControls();
@@ -83,7 +191,7 @@ int mainMenu(){
 			}
 		}
 
-		if(strcmp(sKeypressed, "UP")==0){ //cehcks if the user pressed "up"
+		if(strcmp(cKeyboardInput, "UP")==0){ //cehcks if the user pressed "up"
 			if(iSelector>0){ //checks is the selector is not on first item
 				iSelector--; //moves selector one up
 			}
@@ -92,7 +200,7 @@ int mainMenu(){
 			}
 		}
 
-		if(strcmp(sKeypressed, "DOWN")==0){ //cehcks if the user pressed "down"
+		if(strcmp(cKeyboardInput, "DOWN")==0){ //cehcks if the user pressed "down"
 			if(iSelector<3){//checks is the selector is not on last item
 				iSelector++; //moves selector one down
 			}
@@ -101,39 +209,35 @@ int mainMenu(){
 			}
 		}
 
-
-
-		printf("\nKey: %s\n", sKeypressed);
-		printf("\nSelector: %i\n", iSelector);
-
-	}while(!strcmp(sKeypressed, "RETURN")==0&&
-		!(iSelector==4&&strcmp(sKeypressed, "ENTER")==0));
+	}while((strcmp(cKeyboardInput, "RETURN")!=0&&
+         strcmp(cKeyboardInput, "ESC")!=0)&&
+		!(iSelector==4&&strcmp(cKeyboardInput, "ENTER")==0));
 	//while the user hasn't pressed return or enter on the last entry
 }
 
 int loggedInMenu(){
 	int iSelector=0; //The Selector where the "cursor" currently is
-	char sKeypressed[10];
+	char cKeyboardInput[10];
 
 	do{
 		//shows start screen for logged in users
-		//showLoggedInStartScreen(iSelector);
+		showLoggedInStartScreen(iSelector);
 
-		navigation(sKeypressed); //handles keyboard input
+		navigation(cKeyboardInput); //handles keyboard input
 
-		if(strcmp(sKeypressed, "ENTER")==0){ //checks if user pressed enter
+		if(strcmp(cKeyboardInput, "ENTER")==0){ //checks if user pressed enter
 			switch(iSelector){
-				case 0: //Game(); break; //starts game
-				case 1: //Highscores(); break; //shows highscore
-				case 2: //Rules(); break; //shows rules
-				case 3: //Logout(); break; //logs out
-				case 4: return 1; //exits program
+				case 0: sudokuControls(); break;//Game(); break; //starts game
+				case 1: system("cls"); getHighscoreTable();  navigation(cKeyboardInput); break;//Highscores(); break; //shows highscore
+				case 2: printSudokuRules(); break;//Rules(); break; //shows rules
+				case 3: iUserId = -1; return 1; //Logout(); break; //logs out
+				case 4: exit(0); //exits program
 				default: //printErrorMessage("Error! Incorrect Input!"); break;
 				   break;
 			}
 		}
 
-		if(strcmp(sKeypressed, "UP")==0){ //cehcks if the user pressed "up"
+		if(strcmp(cKeyboardInput, "UP")==0){ //cehcks if the user pressed "up"
 			if(iSelector>0){ //checks is the selector is not on first item
 				iSelector--; //moves selector one up
 			}
@@ -142,7 +246,7 @@ int loggedInMenu(){
 			}
 		}
 
-		if(strcmp(sKeypressed, "DOWN")==0){ //cehcks if the user pressed "down"
+		if(strcmp(cKeyboardInput, "DOWN")==0){ //cehcks if the user pressed "down"
 			if(iSelector<4){//checks is the selector is not on last item
 				iSelector++; //moves selector one down
 			}
@@ -151,41 +255,40 @@ int loggedInMenu(){
 			}
 		}
 
-	}while(!strcmp(sKeypressed, "RETURN")==0&&
-		!(iSelector==4&&strcmp(sKeypressed, "ENTER")==0));
+	}while(!(iSelector==4&&strcmp(cKeyboardInput, "ENTER")==0));
 }
 
 int difficulty(){
 	int iSelector=0; //The Selector where the "cursor" currently is
-	char sKeypressed[10];
+	char cKeyboardInput[10];
 	int iCorrectInput = 0;
 
 	do{
 		//shows start screen for logged in users
-		//showLoggedInStartScreen(iSelector);
-      navigation(sKeypressed); //handles keyboard input
+		showDifficulty(iSelector);
+      navigation(cKeyboardInput); //handles keyboard input
 
-      if(strcmp(sKeypressed, "ENTER")==0){ //checks if user pressed enter
+      if(strcmp(cKeyboardInput, "ENTER")==0){ //checks if user pressed enter
          switch(iSelector){
             case 0:
-               //startGame("EASY");
+               return 1;
                iCorrectInput++;
-               break; //starts game
+               break;
             case 1:
-               //startGame("NORMAL");
+               return 2;
                iCorrectInput++;
-               break; //shows highscore
+               break;
             case 2:
-              // startGame("HARD");
+               return 3;
                iCorrectInput++;
-               break; //shows rules
-            default: //printErrorMessage("Error! Incorrect Input!");
+               break;
+            default: return -1;//printErrorMessage("Error! Incorrect Input!");
                break;
          }
       }
 
 
-		if(strcmp(sKeypressed, "UP")==0){ //cehcks if the user pressed "up"
+		if(strcmp(cKeyboardInput, "UP")==0){ //cehcks if the user pressed "up"
 			if(iSelector>0){ //checks is the selector is not on first item
 				iSelector--; //moves selector one up
 			}
@@ -194,7 +297,7 @@ int difficulty(){
 			}
 		}
 
-		if(strcmp(sKeypressed, "DOWN")==0){ //cehcks if the user pressed "down"
+		if(strcmp(cKeyboardInput, "DOWN")==0){ //cehcks if the user pressed "down"
 			if(iSelector<2){//checks is the selector is not on last item
 				iSelector++; //moves selector one down
 			}
@@ -203,8 +306,11 @@ int difficulty(){
 			}
 		}
 
-	}while(!strcmp(sKeypressed, "RETURN")==0&&
+	}while(strcmp(cKeyboardInput, "RETURN")!=0&&
+        strcmp(cKeyboardInput, "ESC")!=0&&
 		iCorrectInput<=0);
+
+		return -1;
 }
 
 //===============================Functions===============================
@@ -254,7 +360,7 @@ void readPassword(char *cPassword) //readPasswordRepeat?
 Function handleLogin()
 given Parameters: -
 return Value: -
-Description: Goes through the task of logging in (console 
+Description: Goes through the task of logging in (console
 			 as well as the logic behind it)
 -------------------------------------------------------------------------
 */
@@ -265,15 +371,21 @@ void handleLogin()
 	int iStayInMethod;
 
 	do
-	{		
+	{
 		printLogin();
 		printInputUsername();
 		readUsername(cUsername);
 		printInputPassword();
 		readPassword(cPassword);
 
+		iUserId = 2;
+
+		iStayInMethod=1;
+
+		loggedInMenu();
+
 		/*Database Query Method
-	
+
 		if (Query found something)
 		{
 			showLoggedInStartScreen();
@@ -281,7 +393,7 @@ void handleLogin()
 
 		else
 		{
-			printErrorMessage("Benutzername oder Passwort ist falsch. 
+			printErrorMessage("Benutzername oder Passwort ist falsch.
 			Wenn du es erneut versuchen möchtest, drücke Enter.");
 
 			navigation(cKeyPressed);
@@ -305,7 +417,7 @@ void handleLogin()
 Function handleRegistration()
 given Parameters: -
 return Value: -
-Description: Goes through the task of resgistering (console 
+Description: Goes through the task of resgistering (console
 			 as well as the logic behind it)
 -------------------------------------------------------------------------
 */
@@ -331,14 +443,14 @@ void handleRegistration()
 
 			if userDoesNotExist
 			{
-				printSuccessMessage("Dein Benutzer wurde erfolgreich 
+				printSuccessMessage("Dein Benutzer wurde erfolgreich
 				angelegt.");
 				showStartScreen();
 			}
 
 			else
 			{
-				printErrorMessage("Dieser Benutzer existiert bereits. 
+				printErrorMessage("Dieser Benutzer existiert bereits.
 				Wenn Sie es mit einem anderen Benutzernamen erneut
 				versuche möchten, drücken Sie Enter.");
 
@@ -361,7 +473,7 @@ void handleRegistration()
 		{
 			printErrorMessage("Passwörter stimmen nicht überein. Wenn Sie es erneut "\
 							 "versuche möchten, drücken Sie Enter.");
-		
+
 
 			/*navigation(cKeyPressed);
 
@@ -376,7 +488,7 @@ void handleRegistration()
 			}*/
 
 		}
-	} while (iStayInMethod == 0);	
+	} while (iStayInMethod == 0);
 }
 
 /*
@@ -385,7 +497,7 @@ Function getHighscore()
 given Parameters: int user_id
 return Value: -
 Description: Gets the Highscores out of the database and also the best
-			 score of the user with the given user_id and puts them into 
+			 score of the user with the given user_id and puts them into
 			 an array.
 			 This array then will be used to build up the Highscore page
 -------------------------------------------------------------------------
@@ -395,12 +507,12 @@ void getHighscore(int user_id)
 	/*
 	if loggedin
 	{
-		Database Query to get Highscore and personal Highscore of 
+		Database Query to get Highscore and personal Highscore of
 		loggedinUser
 
-		//Logic to change difficulty and played time to points -> 
+		//Logic to change difficulty and played time to points ->
 		to sort the Highscore
-		//Logic to prevent bad display 
+		//Logic to prevent bad display
 		(e.g. 1. place | 2. place | ... | you at 3. place)
 
 		showHighscores(Array);
@@ -436,8 +548,9 @@ void navigation(char cKeyPressed[])
         case 75: {strcpy(cKeyPressed, "LEFT"); loop=1; break;};
         case 77: {strcpy(cKeyPressed, "RIGHT"); loop=1; break;};
         case 8: {strcpy(cKeyPressed, "RETURN"); loop=1; break;};
-        case 27: {strcpy(cKeyPressed, "ESCAPE"); loop=1; break;};
+        case 27: {strcpy(cKeyPressed, "ESC"); loop=1; break;};
         case 13: {strcpy(cKeyPressed, "ENTER"); loop=1; break;};
+        case 59: {strcpy(cKeyPressed, "F1"); loop=1; break;};
 			  default:
 			     if(ch>48&&59>ch){
                  numinput[0]=ch;
