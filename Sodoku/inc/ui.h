@@ -5,7 +5,7 @@
 #include "constants.h"
 #include "customTypes\sudoku_field.h"
 
-void center(char *cMessage)
+void center(char cMessage[]);
 void bigWhiteSpace();
 void whiteSpace();
 void quadWhiteSpace();

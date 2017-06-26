@@ -1,6 +1,17 @@
+/*
+================================================================================
+Autoren: Timo Scheile, Lukas Knapp, Nick Schikora
+Klasse: FA12
+Programmname: ui_logic.c
+Datum: 26.06.2017
+Beschreibung: Kümmert sich um jegliche Logiken des User-Interfaces, abgesehen
+			  von den Konsolenausgaben.
+Version: 1.0
+Compiler: Visual Studio
+===============================================================================
+*/
+
 #include "../inc/ui_logic.h"
-#include "../inc/sudoku.h"
-#include "../inc/login.h"
 
 void help(int xPosition, int yPosition, sudoku_field field[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]){
    char cPossibilities[30];
@@ -230,7 +241,7 @@ int loggedInMenu(){
 				case 0: sudokuControls(); break;//Game(); break; //starts game
 				case 1: system("cls"); getHighscoreTable();  navigation(cKeyboardInput); break;//Highscores(); break; //shows highscore
 				case 2: printSudokuRules(); break;//Rules(); break; //shows rules
-				case 3: iUserId = -1; return 1; //Logout(); break; //logs out
+				case 3: iUserId = 0; return 1; //Logout(); break; //logs out
 				case 4: exit(0); //exits program
 				default: //printErrorMessage("Error! Incorrect Input!"); break;
 				   break;
@@ -315,16 +326,20 @@ int difficulty(){
 
 /*
 * =============================================================================
-* ****readUsername(char *cUsername)****
+* readUsername
 * Parameter: char *cUsername
 * RÃ¼ckgabewert: -
-* Beschreibung: Liest die Konsoleneingabe aus und speichert sie im 
-		char-Array cUsername
+* Beschreibung: Liest die Konsoleneingabe aus und speichert sie im
+*               char-Array cUsername
+*
 * ============================================================================
 */
 void readUsername(char *cUsername)
 {
-	int iError;
+	//Fragt Benutzernamen ab, bis eine gültige Eingabe (nicht leer und 
+	//anständiger string) eingegeben wurde.
+
+	int iError;	
 	do
 	{
 		fflush(stdin);
@@ -334,15 +349,19 @@ void readUsername(char *cUsername)
 
 /*
 * =============================================================================
-* ****readPassword(char *cPassword)****
+* readPassword
 * Parameter: char *cPassword
 * RÃ¼ckgabewert:
 * Beschreibung: Liest die Konsoleneingabe aus und speichert sie im
-		char-Array cPassword
+*               char-Array cPassword
+*
 * ============================================================================
 */
 void readPassword(char *cPassword) //also used to read the password repeat
 {
+	//Fragt Passwort ab, bis eine gültige Eingabe 
+	//(nicht leer und anständiger string) eingegeben wurde.
+
 	int iError;
 	do
 	{
@@ -357,38 +376,42 @@ void readPassword(char *cPassword) //also used to read the password repeat
 * Parameter: -
 * Rückgabewert: -
 * Beschreibung: Geht durch die einzelnen Aufgaben beim Einloggen.
-	        Sowohl das Aufrufen der Konsolenausgaben, das Einlesen der
-	        Daten vom Nutzer, sowie die Datenbankabfrage und schlieÃt
-	        dies bei Erfolg mit einer neuen 
-	        Konsolenausgabe (showLoggedInStartScreen) ab.
+*               Sowohl das Aufrufen der Konsolenausgaben, das Einlesen der
+*               Daten vom Nutzer, sowie die Datenbankabfrage und schlieÃt
+*               dies bei Erfolg mit einer neuen 
+*               Konsolenausgabe (showLoggedInStartScreen) ab.
+*
 * ============================================================================
 */
 void handleLogin()
 {
+	//Deklaration Variablen
 	char cUsername[50], cPassword[50];
 	char cKeyPressed[10];
 	int iStayInMethod;
 
 	do
-	{
-		printLogin();
-		printInputUsername();
-		readUsername(cUsername);
-		printInputPassword();
-		readPassword(cPassword);
+	{		
+		printLogin(); //Konsolenausgabe
+		printInputUsername(); //Konsolenausgabe
+		readUsername(cUsername); //Konsoleneingabe
+		printInputPassword(); //Konsolenausgabe
+		readPassword(cPassword); //Konsoleneingabe
     
 		loginUser(cUsername, cPassword);
 
+		//Erfolgreicher Login
 		if (iUserId != 0)
 		{
-			showLoggedInStartScreen();
+			loggedInMenu();
 			iStayInMethod = 1;
 		}
 
+		//Nicht erfolgreicher Login
 		else
 		{
-			printErrorMessage("Benutzername oder Passwort ist falsch.\
-			Wenn Sie es erneut versuchen mÃ¶chten, drÃ¼cke Enter.");
+			printErrorMessage("Benutzername oder Passwort ist falsch."\
+			"Wenn Sie es erneut versuchen mÃ¶chten, drÃ¼cke Enter.");
 
 			navigation(cKeyPressed);
 
@@ -412,14 +435,15 @@ void handleLogin()
 * Parameter: -
 * RÃ¼ckgabewert: -
 * Beschreibung: Geht durch die einzelnen Aufgaben beim Registrieren.
-	        Sowohl das Aufrufen der Konsolenausgaben, das Einlesen der
-	        Daten vom Nutzer, sowie die Datenbankabfrage und schlieÃt
-	        dies bei Erfolg mit einer neuen 
-	        Konsolenausgabe (showStartScreen) ab.
+				Sowohl das Aufrufen der Konsolenausgaben, das Einlesen der
+				Daten vom Nutzer, sowie die Datenbankabfrage und schlieÃt
+				dies bei Erfolg mit einer neuen 
+				Konsolenausgabe (showStartScreen) ab.
 * ============================================================================
 */
 void handleRegistration()
 {
+	//Deklaration Variablen
 	char cUsername[50], cPassword[50], cPasswordRepeat[50];
 	char cKeyPressed[10];
 	int iStayInMethod;	
@@ -427,29 +451,32 @@ void handleRegistration()
 
 	do
 	{
-		printRegister();
-		printInputUsername();
-		readUsername(cUsername);
-		printInputPassword();
-		readPassword(cPassword);
-		printInputPasswordRepeat();
-		readPassword(cPasswordRepeat);
+		printRegistration(); //Konsolenausgabe
+		printInputUsername(); //Konsolenausgabe
+		readUsername(cUsername); //Konsoleneingabe
+		printInputPassword(); //Konsolenausgabe
+		readPassword(cPassword); //Konsoleneingabe
+		printInputPasswordRepeat(); //Konsolenausgabe
+		readPassword(cPasswordRepeat); //Konsoleneingabe
 
-		if (strcmp(cPassword, cPasswordRepeat) == 0) //if equal
+		if (strcmp(cPassword, cPasswordRepeat) == 0) //wenn gleich
 		{
-			iTestUserExisting=testIfUserNameExists(cName);
-			if(iTestUserExisting==0) {
-				insertNewUser(cName, cPasswort);
+			iTestUserExisting=testIfUserNameExists(cUsername);
+
+			//Benutzer mit diesem Benutzernamen existiert noch nicht
+			if(iTestUserExisting == 0) {
+				insertNewUser(cUsername, cPassword);
 				iStayInMethod = 1;
-				printSuccessMessage("Dein Benutzer wurde erfolgreich\
-				angelegt.");
+				printSuccessMessage("Dein Benutzer wurde erfolgreich angelegt.");
 				system("pause");
-				showStartScreen();
+				loggedInMenu();
 			}
+
+			//Benutzer mit diesem Benutzernamen existiert schon
 			else if(iTestUserExisting == 1){
-				printErrorMessage("Dieser Benutzer existiert bereits.\
-				Wenn Sie es mit einem anderen Benutzernamen erneut\
-				versuche mÃ¶chten, drÃ¼cken Sie Enter.");
+				printErrorMessage("Dieser Benutzer existiert bereits."\
+				"Wenn Sie es mit einem anderen Benutzernamen erneut"\
+				"versuchen mÃ¶chten, drÃ¼cken Sie Enter.");
 
 				navigation(cKeyPressed);
 
@@ -465,10 +492,11 @@ void handleRegistration()
 			}
 		}
 
+		//wenn keine Übereinstimmung der Passwörter
 		else
 		{
-			printErrorMessage("PasswÃ¶rter stimmen nicht Ã¼berein. Wenn Sie es erneut\
-							  versuchen mÃ¶chten, drÃ¼cken Sie Enter.");
+			printErrorMessage("PasswÃ¶rter stimmen nicht Ã¼berein. Wenn Sie es erneut"\
+							  "versuchen mÃ¶chten, drÃ¼cken Sie Enter.");
 		
 
 			navigation(cKeyPressed);
@@ -485,6 +513,7 @@ void handleRegistration()
 
 		}
 	} while (iStayInMethod == 0);
+}
 
 void navigation(char cKeyPressed[])
 {
@@ -504,21 +533,45 @@ void navigation(char cKeyPressed[])
 			}
 			switch (ch) //Giving "cKeyPressed" the right content
 			{
-        case 72: {strcpy(cKeyPressed, "UP"); loop=1; break;}; //Setting "loop" on to 1
-        case 80: {strcpy(cKeyPressed, "DOWN"); loop=1; break;};//to brake the while loop
-        case 75: {strcpy(cKeyPressed, "LEFT"); loop=1; break;};
-        case 77: {strcpy(cKeyPressed, "RIGHT"); loop=1; break;};
-        case 8: {strcpy(cKeyPressed, "RETURN"); loop=1; break;};
-        case 27: {strcpy(cKeyPressed, "ESC"); loop=1; break;};
-        case 13: {strcpy(cKeyPressed, "ENTER"); loop=1; break;};
-        case 59: {strcpy(cKeyPressed, "F1"); loop=1; break;};
+        case 72: 
+          strcpy(cKeyPressed, "UP");
+          loop=1;//Setting "loop" on to 1 
+          break;
+        case 80: 
+          strcpy(cKeyPressed, "DOWN");
+          loop=1;//to brake the while loop 
+          break;
+        case 75: 
+          strcpy(cKeyPressed, "LEFT");
+          loop=1;
+          break;
+        case 77: 
+          strcpy(cKeyPressed, "RIGHT");
+          loop=1;
+          break;
+        case 8: 
+          strcpy(cKeyPressed, "RETURN");
+          loop=1; 
+          break;
+        case 27: 
+          strcpy(cKeyPressed, "ESC");
+          loop=1;
+          break;
+        case 13: 
+          strcpy(cKeyPressed, "ENTER");
+          loop=1; 
+          break;
+        case 59: 
+          strcpy(cKeyPressed, "F1");
+          loop=1; 
+          break;
 			  default:
 			     if(ch>48&&59>ch){
                  numinput[0]=ch;
                  numinput[1]='\0';
                  strcpy(cKeyPressed, numinput);
 			     }
-              loop=1;
+          loop=1;
 				  break;
 			}
 		}
