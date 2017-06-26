@@ -1,3 +1,16 @@
+/*
+================================================================================
+Autoren: Timo Scheile, Lukas Knapp, Nick Schikora
+Klasse: FA12
+Programmname: ui_logic.c
+Datum: 26.06.2017
+Beschreibung: Kümmert sich um jegliche Logiken des User-Interfaces, abgesehen
+			  von den Konsolenausgaben.
+Version: 1.0
+Compiler: Visual Studio
+===============================================================================
+*/
+
 #include "../inc/ui_logic.h"
 
 void help(int xPosition, int yPosition, sudoku_field field[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]){
@@ -317,12 +330,15 @@ int difficulty(){
 * Parameter: char *cUsername
 * RÃ¼ckgabewert: -
 * Beschreibung: Liest die Konsoleneingabe aus und speichert sie im 
-		char-Array cUsername
+				char-Array cUsername
 * ============================================================================
 */
 void readUsername(char *cUsername)
 {
-	int iError;
+	//Fragt Benutzernamen ab, bis eine gültige Eingabe (nicht leer und 
+	//anständiger string) eingegeben wurde.
+
+	int iError;	
 	do
 	{
 		fflush(stdin);
@@ -336,11 +352,14 @@ void readUsername(char *cUsername)
 * Parameter: char *cPassword
 * RÃ¼ckgabewert:
 * Beschreibung: Liest die Konsoleneingabe aus und speichert sie im
-		char-Array cPassword
+				char-Array cPassword
 * ============================================================================
 */
 void readPassword(char *cPassword) //also used to read the password repeat
 {
+	//Fragt Passwort ab, bis eine gültige Eingabe 
+	//(nicht leer und anständiger string) eingegeben wurde.
+
 	int iError;
 	do
 	{
@@ -355,34 +374,37 @@ void readPassword(char *cPassword) //also used to read the password repeat
 * Parameter: -
 * Rückgabewert: -
 * Beschreibung: Geht durch die einzelnen Aufgaben beim Einloggen.
-	        Sowohl das Aufrufen der Konsolenausgaben, das Einlesen der
-	        Daten vom Nutzer, sowie die Datenbankabfrage und schlieÃt
-	        dies bei Erfolg mit einer neuen 
-	        Konsolenausgabe (showLoggedInStartScreen) ab.
+				Sowohl das Aufrufen der Konsolenausgaben, das Einlesen der
+				Daten vom Nutzer, sowie die Datenbankabfrage und schlieÃt
+				dies bei Erfolg mit einer neuen 
+				Konsolenausgabe (showLoggedInStartScreen) ab.
 * ============================================================================
 */
 void handleLogin()
 {
+	//Deklaration Variablen
 	char cUsername[50], cPassword[50];
 	char cKeyPressed[10];
 	int iStayInMethod;
 
 	do
-	{
-		printLogin();
-		printInputUsername();
-		readUsername(cUsername);
-		printInputPassword();
-		readPassword(cPassword);
+	{		
+		printLogin(); //Konsolenausgabe
+		printInputUsername(); //Konsolenausgabe
+		readUsername(cUsername); //Konsoleneingabe
+		printInputPassword(); //Konsolenausgabe
+		readPassword(cPassword); //Konsoleneingabe
     
 		loginUser(cUsername, cPassword);
 
+		//Erfolgreicher Login
 		if (iUserId != 0)
 		{
 			loggedInMenu();
 			iStayInMethod = 1;
 		}
 
+		//Nicht erfolgreicher Login
 		else
 		{
 			printErrorMessage("Benutzername oder Passwort ist falsch.\
@@ -410,14 +432,15 @@ void handleLogin()
 * Parameter: -
 * RÃ¼ckgabewert: -
 * Beschreibung: Geht durch die einzelnen Aufgaben beim Registrieren.
-	        Sowohl das Aufrufen der Konsolenausgaben, das Einlesen der
-	        Daten vom Nutzer, sowie die Datenbankabfrage und schlieÃt
-	        dies bei Erfolg mit einer neuen 
-	        Konsolenausgabe (showStartScreen) ab.
+				Sowohl das Aufrufen der Konsolenausgaben, das Einlesen der
+				Daten vom Nutzer, sowie die Datenbankabfrage und schlieÃt
+				dies bei Erfolg mit einer neuen 
+				Konsolenausgabe (showStartScreen) ab.
 * ============================================================================
 */
 void handleRegistration()
 {
+	//Deklaration Variablen
 	char cUsername[50], cPassword[50], cPasswordRepeat[50];
 	char cKeyPressed[10];
 	int iStayInMethod;	
@@ -425,28 +448,32 @@ void handleRegistration()
 
 	do
 	{
-		printRegistration();
-		printInputUsername();
-		readUsername(cUsername);
-		printInputPassword();
-		readPassword(cPassword);
-		printInputPasswordRepeat();
-		readPassword(cPasswordRepeat);
+		printRegistration(); //Konsolenausgabe
+		printInputUsername(); //Konsolenausgabe
+		readUsername(cUsername); //Konsoleneingabe
+		printInputPassword(); //Konsolenausgabe
+		readPassword(cPassword); //Konsoleneingabe
+		printInputPasswordRepeat(); //Konsolenausgabe
+		readPassword(cPasswordRepeat); //Konsoleneingabe
 
-		if (strcmp(cPassword, cPasswordRepeat) == 0) //if equal
+		if (strcmp(cPassword, cPasswordRepeat) == 0) //wenn gleich
 		{
 			iTestUserExisting=testIfUserNameExists(cUsername);
-			if(iTestUserExisting==0) {
+
+			//Benutzer mit diesem Benutzernamen existiert noch nicht
+			if(iTestUserExisting == 0) {
 				insertNewUser(cUsername, cPassword);
 				iStayInMethod = 1;
 				printSuccessMessage("Dein Benutzer wurde erfolgreich angelegt.");
 				system("pause");
 				loggedInMenu();
 			}
+
+			//Benutzer mit diesem Benutzernamen existiert schon
 			else if(iTestUserExisting == 1){
 				printErrorMessage("Dieser Benutzer existiert bereits."\
 				"Wenn Sie es mit einem anderen Benutzernamen erneut"\
-				"versuche mÃ¶chten, drÃ¼cken Sie Enter.");
+				"versuchen mÃ¶chten, drÃ¼cken Sie Enter.");
 
 				navigation(cKeyPressed);
 
@@ -462,6 +489,7 @@ void handleRegistration()
 			}
 		}
 
+		//wenn keine Übereinstimmung der Passwörter
 		else
 		{
 			printErrorMessage("PasswÃ¶rter stimmen nicht Ã¼berein. Wenn Sie es erneut"\
