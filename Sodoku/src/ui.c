@@ -4,14 +4,50 @@
 
 #include "../inc/ui.h"
 
-//*****************************************************************************
-//Name: bigWhiteSpace
-//Parameter: /
-//Description: Does nine Tabstops
-//*****************************************************************************
-void bigWhiteSpace()
-{
-	printf("\t\t\t\t\t\t\t\t\t");// 9 Tabstops
+void printSudokuRules() {
+
+   char cKeyPressed[10];
+
+   system("cls");
+
+    center("Spielregeln");
+    lineBreaks();
+    center("In jeder Zeile duerfen die Ziffern von 1 bis 9 nur einmal "
+                   "vorkommen");
+   lineBreaks();
+    center("In jeder Spalte duerfen die Ziffern von 1 bis 9 nur einmal "
+                   "vorkommen");
+   lineBreaks();
+    center("In jedem Block duerfen die Ziffern von 1 bis 9 nur einmal"
+            " vorkommen");
+
+    navigation(cKeyPressed);
+}
+
+void center(char message[]){
+   int iWidth = 157, iNeededSpace;
+   int i = 0;
+   char* cNewString[300];
+
+   int iOldStringLength = (int)strlen(message);
+
+   char *cSpaces;
+   iNeededSpace = (iWidth / 2) - (iOldStringLength / 2);
+   cSpaces = malloc(iNeededSpace * sizeof(char));
+
+   for(i=0;i<((iWidth/2)-(iOldStringLength/2));i++){
+      cSpaces[i] = ' ';
+   }
+   cSpaces[i]= '\0';
+   /*for(i=(int)strlen(cSpaces);i>0;i--){
+      if(cSpaces[i]!=' '){
+         cSpaces[i]='\0';
+      }
+   }*/
+
+   sprintf(cNewString,"%s %s", cSpaces, message);
+
+   printf("%s", cNewString);
 }
 
 //*****************************************************************************
@@ -21,7 +57,17 @@ void bigWhiteSpace()
 //*****************************************************************************
 void whiteSpace()
 {
-	printf("\t");
+    printf("\t");
+}
+
+//*****************************************************************************
+//Name: bigWhiteSpace
+//Parameter: /
+//Description: Does nine Tabstops
+//*****************************************************************************
+void bigWhiteSpace()
+{
+    printf("\t\t\t\t\t\t\t\t\t");// 9 Tabstops
 }
 
 //*****************************************************************************
@@ -64,9 +110,9 @@ void lineBreaks()
 void printErrorMessage(char *cError)
 {
 	lineBreaks();
-	bigWhiteSpace();
-	whiteSpace();
-	printf("Es ist ein Fehler aufgetreten: %c", cError);
+	quadWhiteSpace();
+	quadWhiteSpace();
+	printf("Es ist ein Fehler aufgetreten: %s", cError);
 }
 
 //*****************************************************************************
@@ -78,23 +124,18 @@ void showStartScreen(int iSelector)
 {
 	system("cls");
 	lineBreaks();
-	bigWhiteSpace();
-	printf("	Sudoku");
+   center("Sudoku");
 	lineBreaks();
-	bigWhiteSpace();
-	printf("Schnelles Spiel");
+	center("Schnelles Spiel");
 	printSelector(1, iSelector);
 	lineBreaks();
-	bigWhiteSpace();
-	printf(" Login");
+	center("Login");
 	printSelector(2, iSelector);
 	lineBreaks();
-	bigWhiteSpace();
-	printf("Registrieren");
+	center("Registrieren");
 	printSelector(3, iSelector);
 	lineBreaks();
-	bigWhiteSpace();
-	printf("	Beenden");
+	center("Beenden");
 	printSelector(4, iSelector);
 	lineBreaks();
 }
@@ -108,8 +149,7 @@ void printLogin()
 {
 	system("cls");
 	lineBreaks();
-	bigWhiteSpace();
-	printf("Login");
+	center("Login");
 }
 
 //*****************************************************************************
@@ -121,8 +161,7 @@ void printRegistration()
 {
 	system("cls");
 	lineBreaks();
-	bigWhiteSpace();
-	printf("Registrierung");
+	center("Registrierung");
 }
 
 //*****************************************************************************
@@ -133,8 +172,9 @@ void printRegistration()
 void printInputUsername()
 {
 	lineBreaks();
+	center("Bitte geben Sie Ihren Usernamen ein:");
+	lineBreaks();
 	bigWhiteSpace();
-	printf("Bitte geben sie Ihren Username ein:");
 }
 
 //*****************************************************************************
@@ -145,8 +185,9 @@ void printInputUsername()
 void printInputPassword()
 {
 	lineBreaks();
+	center("Bitte geben Sie Ihr Passwort ein:");
+	lineBreaks();
 	bigWhiteSpace();
-	printf(" Bitte geben sie Ihr Passwort ein:");
 }
 
 //*****************************************************************************
@@ -157,16 +198,18 @@ void printInputPassword()
 void printInputPasswordRepeat()
 {
 	lineBreaks();
-	bigWhiteSpace();
-	printf("Bitte wiederholen sie das Passwort:");
-}
-
-void printSuccessMessage(char cUsername)
-{
+	center("Bitte wiederholen Sie das Passwort:");
 	lineBreaks();
 	bigWhiteSpace();
-	whiteSpace();
-	printf("Ihr Username ist: %c", cUsername);
+}
+
+void printSuccessMessage(char* cUsername)
+{
+   char* cMessage;
+   cMessage = strcat("Ihr Username ist: ", cUsername);
+	lineBreaks();
+
+	center(cMessage);
 }
 
 //*****************************************************************************
@@ -178,20 +221,15 @@ void showDifficulty(int iSelector)
 {
 	system("cls");
 	lineBreaks();
-	quadWhiteSpace();
-	quadWhiteSpace();
-	printf("    Schwierigkeitsgrad");
+	center("Schwierigkeitsgrad");
 	lineBreaks();
-	bigWhiteSpace();
-	printf("  Leicht");
+	center("Leicht");
 	printSelector(1, iSelector);
 	lineBreaks();
-	bigWhiteSpace();
-	printf("  Mittel");
+	center("Mittel");
 	printSelector(2, iSelector);
 	lineBreaks();
-	bigWhiteSpace();
-	printf("  Schwer");
+	center("Schwer");
 	printSelector(3, iSelector);
 }
 
@@ -204,27 +242,21 @@ void showLoggedInStartScreen(int iSelector)
 {
 	system("cls");
 	lineBreaks();
-	bigWhiteSpace();
-	printf("  Sudoku");
+	center("Sudoku");
 	lineBreaks();
-	bigWhiteSpace();
-	printf("  Spielen");
+	center("Spielen");
 	printSelector(1, iSelector);
 	lineBreaks();
-	bigWhiteSpace();
-	printf("Bestenliste");
+	center("Bestenliste");
 	printSelector(2, iSelector);
 	lineBreaks();
-	bigWhiteSpace();
-	printf("  Regeln");
+	center("Regeln");
 	printSelector(3, iSelector);
 	lineBreaks();
-	bigWhiteSpace();
-	printf("  Logout");
+	center("Logout");
 	printSelector(4, iSelector);
 	lineBreaks();
-	bigWhiteSpace();
-	printf("  Beenden");
+	center("Beenden");
 	printSelector(5, iSelector);
 	lineBreaks();
 }
@@ -234,60 +266,33 @@ void showLoggedInStartScreen(int iSelector)
 //Parameter: /
 //Description:
 //*****************************************************************************
-void printFieldHorizontal(int rowNumber)
+void printFieldHorizontal()
 {
 	int iCounter = 9;
-	char horicontalHexaCode;
-	char crossingHexaCode;
-
-	/*Hexacodes
-		===Doppelstriche===
-		Hoch/Runter: 186 -> '\xBA';
-		Rechts/Links: 205 -> '\xCD';
-		Kreuz:	206 -> '\xCE';
-		Oben-links: 201 -> '\xC9';
-		Unten-links: 200 -> '\xC8';
-
-		===Einzelstriche===
-		Hoch/Runter: 179 -> '\cB3';
-		Rechts/Links: 196 -> '\xC4';
-		Kreuz: 197 -> '\xC5';
-	*/
-	
-	if (rowNumber % 3 == 0)
-	{
-		horicontalHexaCode = '\xCD';
-	}
-	else
-	{
-		horicontalHexaCode = '\xC4';
-	}
-
 	while(iCounter > 0)
 	{
-		if (iCounter % 3 == 0)
-		{
-			//Doppelstriche
-			crossingHexaCode = '\xBA';
-		}
-		else
-		{
-			if (rowNumber % 3 == 0)
-			{
-				//Doppelstriche
-				crossingHexaCode = '\xCD';
-			}
-			else
-			{
-				//Einzelstriche
-				crossingHexaCode = '\xC5';
-			}			
-		}
-
-		printf("%c%c%c%c%c%c%c", crossingHexaCode, horicontalHexaCode, horicontalHexaCode, horicontalHexaCode, horicontalHexaCode, horicontalHexaCode, horicontalHexaCode);
+		printf("\xC5\xC4\xC4\xC4\xC4\xC4\xC4");
     iCounter--;
 	}
-	printf("\xBA\n");
+
+	printf("\xC5\n");
+}
+
+void showPauseMenu(iSelector)
+{
+   system("cls");
+   lineBreaks();
+   center("Pause");
+   lineBreaks();
+   lineBreaks();
+	center("Zurueck zum Spiel");
+   printSelector(1, iSelector);
+	lineBreaks();
+	center("Zeige Loesung");
+   printSelector(2, iSelector);
+	lineBreaks();
+	center("Spiel Beenden");
+   printSelector(3, iSelector);
 }
 
 //*****************************************************************************
@@ -297,32 +302,30 @@ void printFieldHorizontal(int rowNumber)
 //*****************************************************************************
 void printField(sudoku_field sudoku_fields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS])
 {
+   system("cls");
 	/*sudoku_field sudoku_fields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS];*/
 	int i,j;
-	char verticalHexaCode;
-	for(i = 0; i < SUDOKU_FIELDS_X_AXIS; i++){
 
+	for(i = 0; i < SUDOKU_FIELDS_X_AXIS; i++){
 		hexaWhiteSpace();
-		printFieldHorizontal(i);
+		printFieldHorizontal();
 		hexaWhiteSpace();
 		for(j = 0; j < SUDOKU_FIELDS_Y_AXIS; j++){
 
-			
-			if (j % 3 == 0){
-				verticalHexaCode = '\xBA';
+			if ( sudoku_fields[i][j].value == 0)
+			{
+				printf("\xB3      ");
 			}
-
-			else{
-				verticalHexaCode = '\xB3';
+			else
+			{
+				printf("\xB3  %i   ", sudoku_fields[i][j].value);
 			}
-
-			printf("%c  %i   ", verticalHexaCode, sudoku_fields[i][j].value);
 		}
-		printf("\xBA\n");
+		printf("\xB3\n");
 	}
 
 	hexaWhiteSpace();
-	printFieldHorizontal(0);
+	printFieldHorizontal();
 	hexaWhiteSpace();
 	printf("Hilfe");
 	hexaWhiteSpace();
@@ -360,6 +363,7 @@ void printSelector(int iPosition, int iSelector)
 
 void showIntro()
 {
+   /*char cKeyPressed[10];
 	system("cls");
 	printf(" .----------------.  .----------------.  .----------------.  .----------------.  .----------------.  .----------------. \n");
 	printf("| .--------------. || .--------------. || .--------------. || .--------------. || .--------------. || .--------------. |\n");
@@ -372,8 +376,9 @@ void showIntro()
 	printf("| |              | || |              | || |              | || |              | || |              | || |              | |\n");
 	printf("| '--------------' || '--------------' || '--------------' || '--------------' || '--------------' || '--------------' |\n");
 	printf(" '----------------'  '----------------'  '----------------'  '----------------'  '----------------'  '----------------' \n");
-	Sleep(5000);
-}
+   navigation(cKeyPressed);*/
 
+   mainMenu();
+}
 
 
