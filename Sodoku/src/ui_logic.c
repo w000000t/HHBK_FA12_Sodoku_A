@@ -1,34 +1,48 @@
-/*
-================================================================================
-Autoren: Timo Scheile, Lukas Knapp, Nick Schikora
-Klasse: FA12
-Programmname: ui_logic.c
-Datum: 26.06.2017
-Beschreibung: KÃ¼mmert sich um jegliche Logiken des User-Interfaces, abgesehen
-			  von den Konsolenausgaben.
-Version: 1.0
-Compiler: Visual Studio
-===============================================================================
-*/
-
 #include "../inc/ui_logic.h"
+#include "../inc/sudoku.h"
+#include "../inc/login.h"
 
-void help(int xPosition, int yPosition, sudoku_field field[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]){
-   char cPossibilities[30];
-   int *iPossibilities=NULL;
-   int iSize=0;
-   COORD coords;
+/*
+ * =============================================================================
+ *  ****help()****
+ *  Parameter:  int xPosition, int yPosition, sudoku_field field
+ *  Rückgabewert: -
+ *  Beschreibung:    Setzt den Cursor auf die Position unter das Sudokufeld
+ *                    Schreibt den text "moegliche loesungen":
+ *                    Setzt den Cursor dann unter diesen Text und ruft die
+ *                    Funktion auf, die die möglichen nummern für das
+ *                    aktuelle Feld errechnet
+ *  ============================================================================
+ */
+void help(int xPosition,
+          int yPosition,
+          sudoku_field field[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]){
+
+   COORD coords; //COORDS for the cursor in the console
    coords.X = 48;
    coords.Y = 22;
    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),coords);
+   //sets cursor position in the console
 
    printf("Moegliche Loesungen:");
 
    coords.Y = 23;
    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),coords);
+   //sets cursor to under the text
    getPossibleNumbersForField(xPosition, yPosition, field);
+   //calls function that calculates and prints the possible numbers
 }
 
+/*
+ * =============================================================================
+ *  ****pauseMenuHandler()****
+ *  Parameter:       -
+ *  Rückgabewert:    int iChoice
+ *  Beschreibung:    Die Funktion behandelt die Benutzereingaben im Pausemenü
+ *                    dazu wird erst die Funktion für die Darstellung aufgerufen
+ *                    und anschließend auf eine Benutzereingabe gewartet
+ *  ============================================================================
+ */
 int pauseMenuHandler(){
 
    char cKeyPressed[10];
@@ -37,8 +51,8 @@ int pauseMenuHandler(){
 
    do{
 
-      showPauseMenu(iSelector);
-      navigation(cKeyPressed);
+      showPauseMenu(iSelector); //shows pause menu
+      navigation(cKeyPressed); //awaits keypress
 
       if(strcmp(cKeyPressed, "UP")==0){ //cehcks if the user pressed "up"
 			if(iSelector>0){ //checks is the selector is not on first item
@@ -63,51 +77,67 @@ int pauseMenuHandler(){
        return iChoice;
 		}
 
-   }while((strcmp(cKeyPressed, "ESC")!=0&&strcmp(cKeyPressed, "RETURN")!=0)&&iChoice!=0);
+   }while((strcmp(cKeyPressed, "ESC")!=0
+           &&strcmp(cKeyPressed, "RETURN")!=0)
+           &&iChoice!=0);
 
    return iChoice;
 
 }
 
-int sudokuControls(){
-   int redraw = 1;
-   int xOffset = 51;
-   int yOffset = 1;
-   int xPosition = 0;
-   int yPosition = 0;
-   int i=0;
-   int j=0;
-   int xStep=7;
-   int yStep=2;
-   int iMenuChoice=0;
-   char cKeyboardInput[10];
-   COORD coords;
-   sudoku_field field[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS];
-   int iDifficulty =  difficulty();
 
-   if(iDifficulty==-1){
+
+/*
+ * =============================================================================
+ *  ****sudokuControls()****
+ *  Parameter:       -
+ *  Rückgabewert:    -
+ *  Beschreibung:    Die Funktion ist für die gesamte Sudokusteuerung zuständig.
+ *                    Benutzereingaben werden behandelt und der Cursor auf dem
+ *                     Spielfeld bewegt. Werte werden in das Sudokufield-array
+ *                     geschrieben und nach jeder nutzereingabe wird das
+ *                     Spiel validiert.
+ *  ============================================================================
+ */
+void sudokuControls(){
+   int redraw = 1; //to figure out whether the screen has to be redrawn
+   int xOffset = 51; //The initial offset where the cursor should be to be at
+                     //the top left sudoku field
+   int yOffset = 1;
+   int xPosition = 0; //the x Position of the cursor
+   int yPosition = 0; //the y position of the cursor
+   int xStep=7; //how far the next sudoku fields are apart on the x axis
+   int yStep=2; // '' on the y axis
+
+   int iMenuChoice=0; //what the user entered in the pause menu
+
+   char cKeyboardInput[10]; //the chararray that stores the userinput
+
+   COORD coords; //Coords for the Cursor Position
+
+   sudoku_field field[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS];
+
+   int iDifficulty =  difficulty(); //saves the difficulty in a variable
+
+   if(iDifficulty==-1){ //if the user hasn't chosen a difficulty, exit game
       return 1;
    }
+   system("cls"); //clear screen
 
-   for(i=0;i<SUDOKU_FIELDS_X_AXIS;i++){
-      for(j=0;j<SUDOKU_FIELDS_Y_AXIS;j++){
-         field[i][j].disabled = 0;
-         field[i][j].value = 0;
-      }
-   }
-   system("cls");
+   printField(field); //draws field
 
-   printField(field);
+   //coordinate = the offset of the sudoku + (distance between cells*position)
    coords.Y=yOffset+(yPosition*yStep);
    coords.X=xOffset+(xPosition*xStep);
+
    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),coords);
 
    do{
 
-      navigation(cKeyboardInput);
+      navigation(cKeyboardInput); //awaits user input
 
-      if(redraw==1){
-         printField(field);
+      if(redraw==1){ //checks if field needs to be redrawn
+         printField(field); //draws field
          redraw=0;
 
 
@@ -115,41 +145,47 @@ int sudokuControls(){
          coords.X=xOffset+(xPosition*xStep);
 
          SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),coords);
+         //set cursor position
       }
 
+      //if user pressed "up" and position isn't at the very top
       if(strcmp(cKeyboardInput, "UP")==0&&yPosition>0){
-         yPosition--;
+         yPosition--; //move position up by 1
       }
       else if(strcmp(cKeyboardInput, "DOWN")==0&&yPosition<8){
-         yPosition++;
+         yPosition++; //move position down by 1
       }
       else if(strcmp(cKeyboardInput, "LEFT")==0&&xPosition>0){
-         xPosition--;
+         xPosition--; //move position left by one
       }
       else if(strcmp(cKeyboardInput, "RIGHT")==0&&xPosition<8){
-         xPosition++;
+         xPosition++; //move position right by one
       }
-      else if(strcmp(cKeyboardInput, "RETURN")==0&&field[xPosition][yPosition].disabled!=1){
-         printf("%c",' ');
+      else if(strcmp(cKeyboardInput, "RETURN")==0
+              &&field[xPosition][yPosition].disabled!=1){
+         printf("%c",' '); //empty the field
          field[yPosition][xPosition].value=0;
       }
       else if(strcmp(cKeyboardInput, "F1")==0){
-         help(yPosition, xPosition, field);
-         redraw = 1;
+         help(yPosition, xPosition, field); //prints the help
+         redraw = 1; //tells that the sudoku needs to be redrawn
       }
       else if(strcmp(cKeyboardInput, "ESC")==0){
          iMenuChoice = pauseMenuHandler();
 
          if(iMenuChoice==1){
-            solveSudoku();
+            solveSudoku(); //loest das Sudoku
          }
          else if(iMenuChoice==2){
-            return 1;
+            return; //bricht das spiel ab
          }
 
-         printField(field);
+         printField(field); //das feld wird geschrieben
       }
-      else if(cKeyboardInput[0]>48&&cKeyboardInput[0]<59&&field[xPosition][yPosition].disabled!=1){
+      else if(cKeyboardInput[0]>48
+              &&cKeyboardInput[0]<59
+              &&field[xPosition][yPosition].disabled!=1){
+         //schreibt die Nutzereingabe in die Konsole
          printf("%c",cKeyboardInput[0]);
          field[yPosition][xPosition].value=cKeyboardInput[0]-48;
 
@@ -173,6 +209,18 @@ int sudokuControls(){
    }while(0==0);
 }
 
+/*
+ * =============================================================================
+ *  ****mainMenu()****
+ *  Parameter:       -
+ *  Rückgabewert:    -
+ *  Beschreibung:    Die Funktion überprüft Nutzereingaben, setzt den Cursor,
+ *                    ruft die Funktion auf, die das Hauptmenü darstellt
+ *                    und ruft beim drücken der Enter-Taste die entsprechende
+ *                    Funktion auf.
+ *  ============================================================================
+ */
+
 int mainMenu(){
 	int iSelector=0; //The Selector where the "cursor" currently is
 	char cKeyboardInput[10]; //The Array for what the user has pressed
@@ -195,7 +243,7 @@ int mainMenu(){
 				case 2:
 				   handleRegistration();
 				   break; //opens register screen
-				case 3: return 1; //exits program
+				case 3: return; //exits program
 				default:
 				   //printErrorMessage("Error! Incorrect Input!");
 				   break;
@@ -226,6 +274,18 @@ int mainMenu(){
 	//while the user hasn't pressed return or enter on the last entry
 }
 
+/*
+ * =============================================================================
+ *  ****mainMenu()****
+ *  Parameter:       -
+ *  Rückgabewert:    -
+ *  Beschreibung:    Die Funktion überprüft Nutzereingaben, setzt den Cursor,
+ *                    ruft die Funktion auf, die das Hauptmenü für
+ *                    eingeloggte Benutzer darstellt
+ *                    und ruft beim drücken der Enter-Taste die entsprechende
+ *                    Funktion auf.
+ *  ============================================================================
+ */
 int loggedInMenu(){
 	int iSelector=0; //The Selector where the "cursor" currently is
 	char cKeyboardInput[10];
@@ -239,9 +299,12 @@ int loggedInMenu(){
 		if(strcmp(cKeyboardInput, "ENTER")==0){ //checks if user pressed enter
 			switch(iSelector){
 				case 0: sudokuControls(); break;//Game(); break; //starts game
-				case 1: system("cls"); getHighscoreTable();  navigation(cKeyboardInput); break;//Highscores(); break; //shows highscore
+				case 1: system("cls");
+                     getHighscoreTable();
+                     navigation(cKeyboardInput);
+                     break;//Highscores(); break; //shows highscore
 				case 2: printSudokuRules(); break;//Rules(); break; //shows rules
-				case 3: iUserId = 0; return 1; //Logout(); break; //logs out
+				case 3: iUserId = -1; return 1; //Logout(); break; //logs out
 				case 4: exit(0); //exits program
 				default: //printErrorMessage("Error! Incorrect Input!"); break;
 				   break;
@@ -269,6 +332,18 @@ int loggedInMenu(){
 	}while(!(iSelector==4&&strcmp(cKeyboardInput, "ENTER")==0));
 }
 
+
+/*
+ * =============================================================================
+ *  ****difficulty()****
+ *  Parameter:       -
+ *  Rückgabewert:    int iSelector
+ *  Beschreibung:    Die Funktion überprüft Nutzereingaben, setzt den Cursor,
+ *                    ruft die Funktion auf, die die Auswahl der Schwierigkeit
+ *                    darstellt. Die Funktion gibt dann einen int zurück, der
+ *                    einen Schwierigkeitsgrad darstellt.
+ *  ============================================================================
+ */
 int difficulty(){
 	int iSelector=0; //The Selector where the "cursor" currently is
 	char cKeyboardInput[10];
@@ -324,42 +399,40 @@ int difficulty(){
 		return -1;
 }
 
+//===============================Functions===============================
 /*
-* =============================================================================
-* ****readUsername(char *cUsername)****
-* Parameter: char *cUsername
-* RÃƒÂ¼ckgabewert: -
-* Beschreibung: Liest die Konsoleneingabe aus und speichert sie im 
-				char-Array cUsername
-* ============================================================================
+-------------------------------------------------------------------------
+Function readUsername()
+given Parameters: -
+return Value: -
+Description: Reads the input of the user and returns it (to save it in
+			 a variable)
+-------------------------------------------------------------------------
 */
-void readUsername(char *cUsername)
+char readUsername(char *cUsername)
 {
-	//Fragt Benutzernamen ab, bis eine gÃ¼ltige Eingabe (nicht leer und 
-	//anstÃ¤ndiger string) eingegeben wurde.
-
-	int iError;	
+	char *cUsernamePtr = cUsername;
+	int iError;
 	do
 	{
 		fflush(stdin);
 		iError = scanf("%s", &cUsername[0]);
 	}while(iError == 0 || strcmp(cUsername,"") == 0);
+
+	return *cUsernamePtr;
 }
 
 /*
-* =============================================================================
-* ****readPassword(char *cPassword)****
-* Parameter: char *cPassword
-* RÃƒÂ¼ckgabewert:
-* Beschreibung: Liest die Konsoleneingabe aus und speichert sie im
-				char-Array cPassword
-* ============================================================================
+-------------------------------------------------------------------------
+Function readPassword()
+given Parameters: -
+return Value: -
+Description: Reads the input of the user and returns it (to save it in
+			 a variable)
+-------------------------------------------------------------------------
 */
-void readPassword(char *cPassword) //also used to read the password repeat
+void readPassword(char *cPassword) //readPasswordRepeat?
 {
-	//Fragt Passwort ab, bis eine gÃ¼ltige Eingabe 
-	//(nicht leer und anstÃ¤ndiger string) eingegeben wurde.
-
 	int iError;
 	do
 	{
@@ -369,46 +442,45 @@ void readPassword(char *cPassword) //also used to read the password repeat
 }
 
 /*
-* =============================================================================
-* ****handleLogin()****
-* Parameter: -
-* RÃ¼ckgabewert: -
-* Beschreibung: Geht durch die einzelnen Aufgaben beim Einloggen.
-				Sowohl das Aufrufen der Konsolenausgaben, das Einlesen der
-				Daten vom Nutzer, sowie die Datenbankabfrage und schlieÃƒÂŸt
-				dies bei Erfolg mit einer neuen 
-				Konsolenausgabe (showLoggedInStartScreen) ab.
-* ============================================================================
+-------------------------------------------------------------------------
+Function handleLogin()
+given Parameters: -
+return Value: -
+Description: Goes through the task of logging in (console
+			 as well as the logic behind it)
+-------------------------------------------------------------------------
 */
 void handleLogin()
 {
-	//Deklaration Variablen
 	char cUsername[50], cPassword[50];
 	char cKeyPressed[10];
 	int iStayInMethod;
 
 	do
-	{		
-		printLogin(); //Konsolenausgabe
-		printInputUsername(); //Konsolenausgabe
-		readUsername(cUsername); //Konsoleneingabe
-		printInputPassword(); //Konsolenausgabe
-		readPassword(cPassword); //Konsoleneingabe
-    
-		loginUser(cUsername, cPassword);
+	{
+		printLogin();
+		printInputUsername();
+		readUsername(cUsername);
+		printInputPassword();
+		readPassword(cPassword);
 
-		//Erfolgreicher Login
-		if (iUserId != 0)
+		iUserId = 2;
+
+		iStayInMethod=1;
+
+		loggedInMenu();
+
+		/*Database Query Method
+
+		if (Query found something)
 		{
-			loggedInMenu();
-			iStayInMethod = 1;
+			showLoggedInStartScreen();
 		}
 
-		//Nicht erfolgreicher Login
 		else
 		{
-			printErrorMessage("Benutzername oder Passwort ist falsch.\
-			Wenn Sie es erneut versuchen mÃƒÂ¶chten, drÃƒÂ¼cke Enter.");
+			printErrorMessage("Benutzername oder Passwort ist falsch.
+			Wenn du es erneut versuchen möchtest, drücke Enter.");
 
 			navigation(cKeyPressed);
 
@@ -422,58 +494,51 @@ void handleLogin()
 				iStayInMethod = 1;
 			}
 		}
-	
+	*/
 	} while (iStayInMethod == 0);
 }
 
 /*
-* =============================================================================
-* ****handleRegistration()****
-* Parameter: -
-* RÃƒÂ¼ckgabewert: -
-* Beschreibung: Geht durch die einzelnen Aufgaben beim Registrieren.
-				Sowohl das Aufrufen der Konsolenausgaben, das Einlesen der
-				Daten vom Nutzer, sowie die Datenbankabfrage und schlieÃƒÂŸt
-				dies bei Erfolg mit einer neuen 
-				Konsolenausgabe (showStartScreen) ab.
-* ============================================================================
+-------------------------------------------------------------------------
+Function handleRegistration()
+given Parameters: -
+return Value: -
+Description: Goes through the task of resgistering (console
+			 as well as the logic behind it)
+-------------------------------------------------------------------------
 */
 void handleRegistration()
 {
-	//Deklaration Variablen
 	char cUsername[50], cPassword[50], cPasswordRepeat[50];
 	char cKeyPressed[10];
-	int iStayInMethod;	
-	int iTestUserExisting;	
+	int iStayInMethod;
 
 	do
 	{
-		printRegistration(); //Konsolenausgabe
-		printInputUsername(); //Konsolenausgabe
-		readUsername(cUsername); //Konsoleneingabe
-		printInputPassword(); //Konsolenausgabe
-		readPassword(cPassword); //Konsoleneingabe
-		printInputPasswordRepeat(); //Konsolenausgabe
-		readPassword(cPasswordRepeat); //Konsoleneingabe
+		printRegistration();
+		printInputUsername();
+		readUsername(cUsername);
+		printInputPassword();
+		readPassword(cPassword);
+		printInputPasswordRepeat();
+		readPassword(cPasswordRepeat);
 
-		if (strcmp(cPassword, cPasswordRepeat) == 0) //wenn gleich
+		if (strcmp(cPassword, cPasswordRepeat) == 0) //if equal
 		{
-			iTestUserExisting=testIfUserNameExists(cUsername);
+			/*Database Query
 
-			//Benutzer mit diesem Benutzernamen existiert noch nicht
-			if(iTestUserExisting == 0) {
-				insertNewUser(cUsername, cPassword);
-				iStayInMethod = 1;
-				printSuccessMessage("Dein Benutzer wurde erfolgreich angelegt.");
-				system("pause");
-				loggedInMenu();
+			if userDoesNotExist
+			{
+				printSuccessMessage("Dein Benutzer wurde erfolgreich
+				angelegt.");
+				showStartScreen();
 			}
 
-			//Benutzer mit diesem Benutzernamen existiert schon
-			else if(iTestUserExisting == 1){
-				printErrorMessage("Dieser Benutzer existiert bereits."\
-				"Wenn Sie es mit einem anderen Benutzernamen erneut"\
-				"versuchen mÃƒÂ¶chten, drÃƒÂ¼cken Sie Enter.");
+			else
+			{
+				printErrorMessage("Dieser Benutzer existiert bereits.
+				Wenn Sie es mit einem anderen Benutzernamen erneut
+				versuche möchten, drücken Sie Enter.");
 
 				navigation(cKeyPressed);
 
@@ -487,16 +552,16 @@ void handleRegistration()
 					iStayInMethod = 1;
 				}
 			}
+			*/
 		}
 
-		//wenn keine Ãœbereinstimmung der PasswÃ¶rter
 		else
 		{
-			printErrorMessage("PasswÃƒÂ¶rter stimmen nicht ÃƒÂ¼berein. Wenn Sie es erneut"\
-							  "versuchen mÃƒÂ¶chten, drÃƒÂ¼cken Sie Enter.");
-		
+			printErrorMessage("Passwörter stimmen nicht überein. Wenn Sie es erneut "\
+							 "versuche möchten, drücken Sie Enter.");
 
-			navigation(cKeyPressed);
+
+			/*navigation(cKeyPressed);
 
 			if (strcmp(cKeyPressed, "ENTER") == 0)
 			{
@@ -506,10 +571,44 @@ void handleRegistration()
 			else
 			{
 				iStayInMethod = 1;
-			}
+			}*/
 
 		}
 	} while (iStayInMethod == 0);
+}
+
+/*
+-------------------------------------------------------------------------
+Function getHighscore()
+given Parameters: int user_id
+return Value: -
+Description: Gets the Highscores out of the database and also the best
+			 score of the user with the given user_id and puts them into
+			 an array.
+			 This array then will be used to build up the Highscore page
+-------------------------------------------------------------------------
+*/
+void getHighscore(int user_id)
+{
+	/*
+	if loggedin
+	{
+		Database Query to get Highscore and personal Highscore of
+		loggedinUser
+
+		//Logic to change difficulty and played time to points ->
+		to sort the Highscore
+		//Logic to prevent bad display
+		(e.g. 1. place | 2. place | ... | you at 3. place)
+
+		showHighscores(Array);
+	}
+
+	else
+	{
+		printErrorMessage("Sie müssen eingeloggt sein, um diesen Bereich sehen zu können.");
+	}
+	*/
 }
 
 void navigation(char cKeyPressed[])
@@ -530,45 +629,21 @@ void navigation(char cKeyPressed[])
 			}
 			switch (ch) //Giving "cKeyPressed" the right content
 			{
-        case 72: 
-          strcpy(cKeyPressed, "UP");
-          loop=1;//Setting "loop" on to 1 
-          break;
-        case 80: 
-          strcpy(cKeyPressed, "DOWN");
-          loop=1;//to brake the while loop 
-          break;
-        case 75: 
-          strcpy(cKeyPressed, "LEFT");
-          loop=1;
-          break;
-        case 77: 
-          strcpy(cKeyPressed, "RIGHT");
-          loop=1;
-          break;
-        case 8: 
-          strcpy(cKeyPressed, "RETURN");
-          loop=1; 
-          break;
-        case 27: 
-          strcpy(cKeyPressed, "ESC");
-          loop=1;
-          break;
-        case 13: 
-          strcpy(cKeyPressed, "ENTER");
-          loop=1; 
-          break;
-        case 59: 
-          strcpy(cKeyPressed, "F1");
-          loop=1; 
-          break;
+        case 72: {strcpy(cKeyPressed, "UP"); loop=1; break;}; //Setting "loop" on to 1
+        case 80: {strcpy(cKeyPressed, "DOWN"); loop=1; break;};//to brake the while loop
+        case 75: {strcpy(cKeyPressed, "LEFT"); loop=1; break;};
+        case 77: {strcpy(cKeyPressed, "RIGHT"); loop=1; break;};
+        case 8: {strcpy(cKeyPressed, "RETURN"); loop=1; break;};
+        case 27: {strcpy(cKeyPressed, "ESC"); loop=1; break;};
+        case 13: {strcpy(cKeyPressed, "ENTER"); loop=1; break;};
+        case 59: {strcpy(cKeyPressed, "F1"); loop=1; break;};
 			  default:
 			     if(ch>48&&59>ch){
                  numinput[0]=ch;
                  numinput[1]='\0';
                  strcpy(cKeyPressed, numinput);
 			     }
-          loop=1;
+              loop=1;
 				  break;
 			}
 		}
