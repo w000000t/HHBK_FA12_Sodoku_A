@@ -1,24 +1,54 @@
+/*
+================================================================================
+Autoren: Simon Marx
+Klasse: FA12
+Programmname: Sudoku
+Datum: 23.06.2017
+Beschreibung: Die Datei enthält alle nötigen Funktionen zum Umgang mit dem
+              Sudoku. Funktionen zur Validierung, Initialisierung, Lösung eines
+              Sudokus und der Hilfe zum Sudoku werden bereitgestellt.
+Version: 0.2
+Compiler: Visual Studio 2017
+===============================================================================
+*/
 #include "../inc/sudoku.h"
-
-/**
-Function initSudoku
-Parameters: difficulty The difficulty the sudoku should have,
-			sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS] 
-				The two dimensional array that contains all fields of the sudoku
-Return: -
-Description: Inits the sudoku field and loads the preset from the database.
-**/
-int initSudoku(int difficulty, sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]){
-	int iXAXIS = 0, iYAXIS = 0, rc, cols, iCols, iColNrXCord, iColNrYCord, iColNrValue;
+/*
+* =============================================================================
+*  initSudoku
+*  Parameter: sudoku_field 
+*               sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]
+*     				  Dieses zweidimensionale Array enthält alle Felder des Sudokus.
+*             int iWithSolution Gibt an, ob das Spielfeld aufgelöst werden soll
+*  Rückgabewert: -
+*  Beschreibung: Die Funktion lädt eines der in der Datenbank gespeicherten
+*				 Spiele mit dem gewünschten Schwierigkeitsgrad und füllt
+*				 die Spieldaten in das Array.
+*  ============================================================================
+*/
+void initSudoku(
+	sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS],
+  int iWithSolution
+)
+{
+	int iXAXIS = 0,
+		  iYAXIS = 0,
+		  iRc, // return code für verschiedene Funktionen => Überprüfen auf Fehler
+		  iCols,
+		  iColsCounter, 
+		  iColNrXCord, 
+		  iColNrYCord, 
+		  iColNrValue;
 	sqlite3 *db;
 	sqlite3_stmt *stmt;
 
-	char sql_game_preset_template[] = "SELECT "\
+	// sql statement
+	char cSqlGamePresetTemplate[] = "SELECT "\
 								"spf.x_cordinate as x_cord,"\
 								"spf.y_cordinate as y_cord,"\
 								"spf.value as value "\
 							"FROM sudoku_preset_fields spf "\
-							"INNER JOIN sudoku_preset_games spg ON spg.id = spf.preset_id "\
+							"INNER JOIN sudoku_preset_games spg"\
+							" ON spg.id = spf.preset_id "\
 							"WHERE spg.id = ("\
 							"	SELECT "\
 							"		sspg.id "\
@@ -26,196 +56,451 @@ int initSudoku(int difficulty, sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][S
 							"	WHERE sspg.difficulty = %i "\
 							"	ORDER BY (abs(random())) "\
 							"	LIMIT 1 "\
-							")";
+							") AND is_solution = %i";
 
-	char *sql_game_preset;
+	char *cSqlGamePreset;
 
-	sql_game_preset = sqlite3_mprintf(sql_game_preset_template, difficulty);
-
+	cSqlGamePreset = sqlite3_mprintf(cSqlGamePresetTemplate, iDifficulty, iWithSolution);
+  printf("%s", cSqlGamePreset);
+	// initialisieren des kompletten arrays mit 0
 	for(iXAXIS = 0; iXAXIS < SUDOKU_FIELDS_X_AXIS; iXAXIS++){
 		for(iYAXIS = 0; iYAXIS < SUDOKU_FIELDS_Y_AXIS; iYAXIS++){
-			sudokuFields[iXAXIS][iYAXIS].disabled = 1;
+			// ist der Wert disabled auf 1 gesetzt kann dieses Feld
+			// nicht editiert werden
+			sudokuFields[iXAXIS][iYAXIS].disabled = 0;
+			// Ein Feld "ohne" Wert bekommt den Wert 0
 			sudokuFields[iXAXIS][iYAXIS].value = 0;
 		}
 	}
 
-	// init db connection
-	rc = sqlite3_open_v2(DB_FILE, &db, SQLITE_OPEN_READWRITE, NULL);
+	// Verbindung zur Datenbank aufbauen
+	iRc = sqlite3_open_v2(DB_FILE, &db, SQLITE_OPEN_READWRITE, NULL);
 
-	if(rc != SQLITE_OK){
+	if(iRc != SQLITE_OK){
 		printf("Sudoku initialization failed due to a missing database connection.");
 		system("pause");
 		exit(-1);
 	}
 
-	// select game preset from db
-	rc = sqlite3_prepare_v2(db, sql_game_preset, strlen(sql_game_preset), &stmt, NULL);
+	// Ein Spiel aus der Datenbank laden
+	iRc = sqlite3_prepare_v2(
+    db, 
+    cSqlGamePreset, 
+    strlen(cSqlGamePreset),
+    &stmt, 
+    NULL
+  );
 
-	if(rc != SQLITE_OK){
-		printf("Failed to load the game preset. Error code: %i", rc);
+	if(iRc != SQLITE_OK){
+		printf("Failed to load the game preset. Error code: %i", iRc);
 		system("pause");
 		exit(-1);
 	}
 
-	cols = sqlite3_column_count(stmt);
+	iCols = sqlite3_column_count(stmt); // anzahl der Spalten
+
+	// alle Datensätze durchlaufen
 	while(sqlite3_step(stmt) == SQLITE_ROW){
-		for(iCols = 0; iCols < cols; iCols++){
-			if(strcmp((const char*)sqlite3_column_name(stmt, iCols), "x_cord") == 0){
-				iColNrXCord = sqlite3_column_int(stmt, iCols);
+		// alle Spalten/pro Datensatz durchlaufen
+		for(iColsCounter = 0; iColsCounter < iCols; iColsCounter++){
+			// zuordnen der Werte aus der Datenbank
+			if(
+        strcmp(
+          (const char*)sqlite3_column_name(stmt, iColsCounter),
+          "x_cord"
+        ) == 0
+      ){
+        // x Kordinate des aktuellen Felds
+				iColNrXCord = sqlite3_column_int(stmt, iColsCounter);
 			}
 
-			if(strcmp((const char*)sqlite3_column_name(stmt, iCols), "y_cord") == 0){
-				iColNrYCord = sqlite3_column_int(stmt, iCols);
+			if(
+        strcmp(
+          (const char*)sqlite3_column_name(stmt, iColsCounter),
+          "y_cord"
+        ) == 0
+      ){
+        // y Kordinate des aktuellen Felds
+				iColNrYCord = sqlite3_column_int(stmt, iColsCounter);
 			}
 
-			if(strcmp((const char*)sqlite3_column_name(stmt, iCols), "value") == 0){
-				iColNrValue = sqlite3_column_int(stmt, iCols);
+			if(
+        strcmp(
+          (const char*)sqlite3_column_name(stmt, iColsCounter),
+          "value"
+        ) == 0
+      ){
+        // Wert des aktuellen Felds
+				iColNrValue = sqlite3_column_int(stmt, iColsCounter);
 			}
 		}
+		// Sudokufeld befüllen
+    sudokuFields[iColNrXCord][iColNrYCord].disabled = 1;
 		sudokuFields[iColNrXCord][iColNrYCord].value = iColNrValue;
 	}
 
 	sqlite3_finalize(stmt);
-	return 1; // OK
 }
 
-/**
-Function: validateSudoku
-Parameters: sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS] 
-				The two dimensional array that contains all fields of the sudoku
-Return: Returns 1 if the sudoku is valid and 0 if its not
-**/
-int validateSudoku(sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]){
-  int rowsValid = 0, boxesValid = 0;
-  
-  rowsValid = validateRows(sudokuFields);
-  boxesValid = validateFields(sudokuFields);
+/*
+* =============================================================================
+*  validateSudoku
+*  Parameter: sudoku_field 
+*     				sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]
+*     				  Dieses zweidimensionale Array enthält alle Felder des Sudokus.
+*  Rückgabewert: int Gibt 1 zurück, wenn das Sudoku komplett valide ist und
+*                    alle Regeln befolgt wurden, 0 wenn nicht.
+*  Beschreibung: Die Funktion überprüft alle Zeilen und Spalten sowie, ob alle
+*                Felder gesetzt sind. Sollten alle Zeile und Spalten valide und
+*                alle Felder ausgefüllt sein, liefert die Funktion SUDOKU_TRUE
+*                zurück, sollten nicht alle Felder valide sein, liefert die
+*                Funktion SUDOKU_FALSE zurück.
+*  ============================================================================
+*/
+int validateSudoku(
+  sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]
+){
+  int iRowsValid = SUDOKU_FALSE,
+      iBoxesValid = SUDOKU_FALSE,
+      iAllFieldsUsed = SUDOKU_FALSE;
 
-  if(rowsValid == 1 && boxesValid == 1){
-	return 1;
-  }else{
-	return 0;
+  iRowsValid = validateRows(sudokuFields);
+  iBoxesValid = validateFields(sudokuFields);
+  iAllFieldsUsed = areAllFieldsFilledOut(sudokuFields);
+
+  return iRowsValid == SUDOKU_TRUE &&
+         iBoxesValid == SUDOKU_TRUE &&
+         iAllFieldsUsed == SUDOKU_TRUE 
+         ? SUDOKU_TRUE : SUDOKU_FALSE;
+}
+
+/*
+* =============================================================================
+*  areAllFieldsFilledOut
+*  Parameter: sudoku_field 
+*     				sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]
+*     				  Dieses zweidimensionale Array enthält alle Felder des Sudokus.
+*  Rückgabewert: int SUDOKU_TRUE wenn alle Felder ausgefüllt sind/
+*                    SUDOKU_FALSE wenn NICHT alle Felder ausgefüllt sind
+*  Beschreibung: Die Funktion überprüft, ob alle Felder im Sudoku gesetzt sind
+*  ============================================================================
+*/
+int areAllFieldsFilledOut(
+  sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]
+){
+  int i, j;
+
+  for (i = 0; i < SUDOKU_FIELDS_X_AXIS; i++) {
+    for (j = 0; j < SUDOKU_FIELDS_Y_AXIS; j++) {
+      if (sudokuFields[i][j].value == 0) {
+        return SUDOKU_FALSE;
+      }
+    }
+  }
+  return SUDOKU_TRUE;
+}
+
+/*
+* =============================================================================
+*  validateRow
+*  Parameter: int iRowXIndex Der X Index, dessen Zeile/Spalte überprüft werden
+*                            soll.
+*             int iRowYIndex Der Y Index, dessen Zeile/Speile überprüft werden
+*                            soll.
+*             sudoku_field 
+*     				sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]
+*     				  Dieses zweidimensionale Array enthält alle Felder des Sudokus.
+*  Rückgabewert: int Gibt entweder SUDOKU_TRUE zurück wenn Zeile und Spalte
+*                    der übergebenen Koordinaten valide sind. Gibt SUDOKU_FALSE
+*                    zurück, wenn Zeile und Spalte nicht valide sind.
+*  Beschreibung: Die Funktion überprüft, ob die Zahl an den angegebenen
+*                Koordinaten in der Zeile und der Spalte bereits existieren und
+*                gibt den entsprechenden Rückgabewert zurück.
+*  ============================================================================
+*/
+int validateRow(
+  int rowXIndex,
+  int rowYIndex, 
+  sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]
+){
+  int existingValuesVertical[SUDOKU_FIELDS_X_AXIS];
+  int existingValuesHorizontal[SUDOKU_FIELDS_Y_AXIS];
+  int iCol, currentValue, valueIndex;
+
+  // init help arrays
+  initExistingValuesArrays(existingValuesVertical, SUDOKU_FIELDS_X_AXIS);
+  initExistingValuesArrays(existingValuesHorizontal, SUDOKU_FIELDS_Y_AXIS);
+
+  for (iCol = 0; iCol < SUDOKU_FIELDS_X_AXIS; iCol++) {
+    currentValue = sudokuFields[rowXIndex][iCol].value;
+
+    if (currentValue == 0) continue;
+
+    valueIndex = currentValue - 1;
+    if (existingValuesVertical[valueIndex] == 1) {
+      return SUDOKU_FALSE;
+    }
+    else {
+      existingValuesVertical[valueIndex] = 1;
+    }
+  }
+  // horizontal check
+  for (iCol = 0; iCol < SUDOKU_FIELDS_Y_AXIS; iCol++) {
+    currentValue = sudokuFields[iCol][rowYIndex].value;
+
+    if (currentValue == 0) continue;
+
+    valueIndex = currentValue - 1;
+    if (existingValuesHorizontal[valueIndex] == 1) {
+      return SUDOKU_FALSE;
+    }
+    else {
+      existingValuesHorizontal[valueIndex] = 1;
+    }
+  }
+  return SUDOKU_TRUE;
+}
+
+/*
+* =============================================================================
+*  validateRows
+*  Parameter: sudoku_field 
+*     				sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]
+*     				  Dieses zweidimensionale Array enthält alle Felder des Sudokus.
+*  Rückgabewert: int SUDOKU_TRUE, wenn alle Zeilen und Spalten des Sudokus
+*                    valide sind. SUDOKU_FALSE, wenn nicht alle Zeilen und
+*                    Spalten valide sind.
+*  Beschreibung: Die Funktion überprüft alle Zeilen und Spalten des Sudokus
+*                und gibt den entsprechenden Rückgabewert zurück.
+*  ============================================================================
+*/
+int validateRows(
+  sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]
+){
+  int iX;
+
+  for (iX = 0; iX < SUDOKU_FIELDS_X_AXIS; iX++) {
+    if (validateRow(iX, iX, sudokuFields) == 0) {// diagonale
+      return SUDOKU_FALSE;
+    }
+  }
+
+  return SUDOKU_TRUE;
+}
+
+/*
+* =============================================================================
+*  validateField
+*  Parameter: int iTopLeftXIndex Die Y-Position der linken oberen Ecke des 
+*                                3x3 Felds.
+*             int iTopLeftYIndex Die X-Position der linken oberen Ecke des
+*                                3x3 Felds.
+*             sudoku_field 
+*     				sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]
+*     				  Dieses zweidimensionale Array enthält alle Felder des Sudokus.
+*  Rückgabewert: int SUDOKU_TRUE, wenn die Zahl im angegebenen Feld nur einmal
+                     existiert, SUDOKU_FALSE, wenn eine Zahl mehrmals existiert
+*  Beschreibung: Die Funktion überprüft, ob eine Zahl mehrmals in dem
+*                angegebenen Feld vorhanden ist und gibt den entsprechenenden
+*                Rückgabewert zurück.
+*  ============================================================================
+*/
+int validateField(
+  int iTopLeftXIndex,
+  int iTopLeftYIndex,
+  sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]
+) 
+{
+  int iX, iY, existingValues[SUDOKU_FIELDS_X_AXIS], currentValue, valueIndex;
+
+  initExistingValuesArrays(existingValues, SUDOKU_FIELDS_X_AXIS);
+
+  for (iX = iTopLeftXIndex; iX < iTopLeftXIndex + 3; iX++) {
+    for (iY = iTopLeftYIndex; iY < iTopLeftYIndex + 3; iY++) {
+      currentValue = sudokuFields[iX][iY].value;
+
+      if (currentValue == 0) continue;
+
+      valueIndex = currentValue - 1;
+
+      if (existingValues[valueIndex] == 1) {
+        return SUDOKU_FALSE;
+      }
+      else {
+        existingValues[valueIndex] = 1;
+      }
+    }
+  }
+  return SUDOKU_TRUE;
+}
+
+/*
+* =============================================================================
+*  validateFields
+*  Parameter: sudoku_field 
+*     				sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]
+*     				  Dieses zweidimensionale Array enthält alle Felder des Sudokus.
+*  Rückgabewert: int Gibt SUDOKU_TRUE zurück, wenn alle 3x3 valide sind.
+*                         SUDOKU_FALSE, wenn nicht.
+*  Beschreibung: Die Funktion überprüft alle 3x3 Felder.
+*  ============================================================================
+*/
+int validateFields(
+  sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]
+) {
+  int iX, iY;
+
+  for (iX = 0; iX < SUDOKU_FIELDS_X_AXIS; iX += 3) {
+    for (iY = 0; iY < SUDOKU_FIELDS_Y_AXIS; iY += 3) {
+      if (validateField(iX, iY, sudokuFields) == 0) {
+        return SUDOKU_FALSE;
+      }
+    }
+  }
+  return SUDOKU_TRUE;
+}
+
+/*
+* =============================================================================
+*  solveSudoku
+*  Parameter: int xPos
+*             int yPos
+*             sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]
+*     				  Dieses zweidimensionale Array enthält alle Felder des Sudokus.
+*             int iHasError Gibt an, ob das nächste Feld einen Error hat
+*  Rückgabewert: -
+*  Beschreibung: Die Funktion löst das Sudoku
+*  ============================================================================
+*/
+void solveSudoku(
+  int xPos,
+  int yPos,
+  sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS],
+  int iHasError
+)
+{  
+  if (USE_TEMP_SOLUTION_TO_SOLVE_SUDOKU == SUDOKU_TRUE) {
+    initSudoku(sudokuFields, 1);
+  }
+  else {
+    solveSudokuTemp(xPos, yPos, sudokuFields, iHasError);
   }
 }
 
-/**
-Function: validateRow
-Parameters: rowXIndex, rowYIndex, 
-			sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS] 
-				The two dimensional array that contains all fields of the sudoku
-Return: Returns 1 if the given row is valid and 0 if its not
-**/
-int validateRow(int rowXIndex, int rowYIndex, sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]){
-	int existingValuesVertical[SUDOKU_FIELDS_X_AXIS];
-	int existingValuesHorizontal[SUDOKU_FIELDS_Y_AXIS];
-	int iCol, currentValue, valueIndex;
+/*
+* =============================================================================
+*  solveSudokuTemp
+*  Parameter: int xPos
+*             int yPos
+*             sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]
+*     				  Dieses zweidimensionale Array enthält alle Felder des Sudokus.
+*             int iHasError Gibt an, ob das nächste Feld einen Error hat
+*  Rückgabewert: Gibt 1 zurück, wenn das Sudoku gelöst werde konnte.
+*                Gibt 0 zurück, wenn das SUdoku nicht gelöst werden konnte.
+*  Beschreibung: Die Funktion löst das Sudoku *** NICHT FERTIG***
+*                Die Zeit hat nicht gereicht, den Algorithmus richtig zu
+*                implementieren.
+*  ============================================================================
+*/
+int solveSudokuTemp(
+  int xPos,
+  int yPos,
+  sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS],
+  int iHasError
+) {
+  int i = 1, newXPos, newYPos, iMaxValue = 9, iOriginalValue;
 
-	// init help arrays
-	initExistingValuesArrays(existingValuesVertical, SUDOKU_FIELDS_X_AXIS);
-	initExistingValuesArrays(existingValuesHorizontal, SUDOKU_FIELDS_Y_AXIS);
+  iOriginalValue = sudokuFields[xPos][yPos].value;
 
-	// vertical check
-	for(iCol = 0; iCol < SUDOKU_FIELDS_X_AXIS; iCol++){
-		currentValue = sudokuFields[rowXIndex][iCol].value;
+  // Sudoku gelöst
+  if (yPos == 9) {
+    return SUDOKU_TRUE;
+  }
 
-		valueIndex = currentValue == 0 ? 0 : currentValue - 1;
-		if(existingValuesVertical[valueIndex] == 1){
-			return 0;
-		}else{
-			existingValuesVertical[valueIndex] = 1;
-		}
-	}
-	// horizontal check
-	for(iCol = 0; iCol < SUDOKU_FIELDS_Y_AXIS; iCol++){
-		currentValue = sudokuFields[iCol][rowYIndex].value;
+  // Anfang der Zeile => Ende der Zeile und eine Zeile hoch
+  if (xPos == -1) {
+    xPos = 8;
+    yPos--;
+  }
 
-		valueIndex = currentValue == 0 ? 0 : currentValue - 1;
-		if(existingValuesHorizontal[valueIndex] == 1){
-			return 0;
-		}else{
-			existingValuesHorizontal[valueIndex] = 1;
-		}
-	}
-	return 1;
-}
+  // Ende der Zeile => Anfang der Zeile und eine Zeile runter
+  if (xPos > 8) {
+    xPos = 0;
+    yPos++;
+  }
 
-/**
-Function: validateRows
-Parameter: sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS] 
-			The two dimensional array that contains all fields of the sudoku
-Return: Gives 1 if the row is valid and 0 if it is not.
-Description: Checks, whether all rows are valid and all numbers in the given rows exist only once.
-**/
-int validateRows(sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]){
-	int iX, iY, rc;
+  newXPos = xPos;
+  newYPos = yPos;
 
-	for(iX = 0; iX < SUDOKU_FIELDS_X_AXIS; iX++){
-		rc = validateRow(iX, iX, sudokuFields); // diagonale
-	}
+  if (iHasError == SUDOKU_TRUE) {
+    i = iOriginalValue;
+  }
 
-	return rc;
-}
+  // Feld kann bearbeitet werden // Alle anderen Felder sind fest eingetragen
+  if (sudokuFields[xPos][yPos].disabled == SUDOKU_FALSE) {
 
-/**
-Function: validateField
-Parameter: topLeftXIndex The x index of the top left corner of the field to validate
-		   topLeftYIndex the y index of the top left corner of the field to validate
-		   sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS] 
-			The two dimensional array that contains all fields of the sudoku
-Return:	Returns 1 if the field is valid and 0 if it is not.
-Description: Checks, wheather the given field is valid or not.
-**/
-int validateField(int topLeftXIndex, int topLeftYIndex, sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]){
-	int iX, iY, existingValues[SUDOKU_FIELDS_X_AXIS], currentValue, valueIndex;
+    // alle Zahlen von 1 bis 9 durchgehen
+    for (i = 1; i <= iMaxValue; i++) {
+      if (iHasError == SUDOKU_TRUE && i == iOriginalValue) continue;
 
-	initExistingValuesArrays(existingValues, SUDOKU_FIELDS_X_AXIS);
+      // temporäre Zuweisung
+      sudokuFields[xPos][yPos].value = i;
+      printf("\n\n row: %i col: %i i: %i", validateRow(xPos, yPos, sudokuFields), validateField((xPos / 3) * 3, (yPos / 3) * 3, sudokuFields), i);
+      // Wenn die Zahl valide ist => springe aus der Schleife und gehe ein Feld weiter
+      if (
+        validateRow(xPos, yPos, sudokuFields) == SUDOKU_TRUE
+        && validateField((xPos / 3) * 3, (yPos / 3) * 3, sudokuFields) == SUDOKU_TRUE
+        ) {
+        break;
+      }
 
-	for(iX = topLeftXIndex; iX < topLeftXIndex + 3; iX++){
-		for(iY = topLeftYIndex; iY < topLeftYIndex + 3; iY++){
-			currentValue = sudokuFields[iX][iY].value;
+      if (i == iMaxValue && iHasError == SUDOKU_TRUE) {
+        i = 1;
+        iMaxValue = iOriginalValue;
+      }
+      // Die Zahl ist nicht valide => zurücksetzen
+      sudokuFields[xPos][yPos].value = 0;
+    }
 
-			valueIndex = currentValue == 0 ? 0 : currentValue - 1;
+    // wenn keine valide Zahl gefunden wurde
+    if (sudokuFields[xPos][yPos].value == 0) {
+      // ein Feld zurück
+      newXPos--;
+      iHasError = 1;
+    }
+    else {
+      newXPos++;
+      iHasError = 0;
+    }
+  }
+  // Feld ist default
+  else {
+    // Nächstes Feld konnte nicht befüllt werden dieses Feld ist default also weiter zurück
+    if (iHasError == SUDOKU_TRUE) {
+      newXPos--;
+    }
+    // default feld => darf nicht geändert werden => weiter
+    else {
+      newXPos++;
+    }
+  }
+  printf("\n\n %i %i %i \n\n", xPos, yPos, iHasError);
 
-			if(existingValues[valueIndex] == 1){
-				return 0;
-			}else{
-				existingValues[valueIndex] = 1;
-			}
-		}
-	}
-	return 1;
-}
-
-/**
-Function: validateFields
-Parameter: sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS] 
-			The two dimensional array that contains all fields of the sudoku
-Return: Returns 1 if all fields are valid and 0 if not.
-
-Description: Validates that each number from 1-9 is existing once in the 3x3 fields.
-**/
-int validateFields(sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]){
-	int iX, iY, rc;
-
-	for(iX = 0; iX < SUDOKU_FIELDS_X_AXIS; iX+=3){
-		for(iY = 0; iY < SUDOKU_FIELDS_Y_AXIS; iY+=3){
-			rc = validateField(iX, iY, sudokuFields);
-		}
-	}
-	return rc;
+  // rekursion wird beendet wenn das yPos = 9
+  solveSudoku(newXPos, yPos, sudokuFields, iHasError);
 }
 
 void getPossibleNumbersForField(
   int xCord,
   int yCord,
   sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]
-){
+) {
   int maxNumbers = 9, firstNumber = 1, i = 0, originalValue;
   originalValue = sudokuFields[xCord][yCord].value;
 
-  for(i = 1; i <= maxNumbers; i++){
+  for (i = 1; i <= maxNumbers; i++) {
     // skip the entered value
-    if(originalValue == i) continue;
+    if (originalValue == i) continue;
 
     // assign temporary value to the current field to check if its valid
     sudokuFields[xCord][yCord].value = i;
@@ -223,89 +508,19 @@ void getPossibleNumbersForField(
     // if the value is valid, expand the array for the possible numbers
     // and add the number to the array
     // =>continue with the next number
-    if(
+    if (
       validateRow(xCord, yCord, sudokuFields) == 1 &&
       validateField((xCord / 3) * 3, (yCord / 3) * 3, sudokuFields) == 1
-      ){
-      if(firstNumber == 1){
+      ) {
+      if (firstNumber == 1) {
         printf("%i ", i);
         firstNumber = 0;
-      } else{
+      }
+      else {
         printf(", %i", i);
       }
     }
   }
   // reset the field to the original value
   sudokuFields[xCord][yCord].value = originalValue;
-}
-
-void solveSudoku(int direction, int currentXPos, int currentYPos, sudoku_field sudokuFields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS]){
-  // wenn searchFieldDirection -1 -> gehe ein Feld nach links 
-  // wenn searchFieldDirection 1 -> gehe ein Feld nach rechts
-  int i = 0, originalValue, newXPos = currentXPos, newYPos = currentYPos, maxNumbers = 9;
-
-  originalValue = sudokuFields[currentXPos][currentYPos].value == 0 ?
-    1 : sudokuFields[currentXPos][currentYPos].value;
-  printf("start %i %i \n", newXPos, newYPos);
-  for(i = originalValue; i <= maxNumbers; i++){
-    sudokuFields[currentXPos][currentYPos].value = i;
-    if(
-      validateRow(currentXPos, currentYPos, sudokuFields) == 1 &&
-      validateField((currentXPos / 3) * 3, (currentYPos / 3) * 3, sudokuFields)
-      ){
-      if(
-        (newXPos + 1) < SUDOKU_FIELDS_X_AXIS
-        ){
-        newXPos++;
-      } else if(
-        (newXPos + 1) == SUDOKU_FIELDS_X_AXIS &&
-        (newYPos + 1) < SUDOKU_FIELDS_Y_AXIS
-        ){
-        newXPos = 0;
-        newYPos++;
-      } else if(
-        (newXPos + 1) == SUDOKU_FIELDS_X_AXIS &&
-        (newYPos + 1) == SUDOKU_FIELDS_Y_AXIS
-        ){
-        newXPos = 0;
-        newYPos = 0;
-      }
-      direction = 1;
-      break;
-    } else{
-      direction = -1;
-    }
-
-    if((i + 1) == maxNumbers && originalValue != 1){
-      i = 1;
-      maxNumbers = originalValue - 1;
-    }
-  }
-
-  if(newYPos == currentYPos && newXPos == currentXPos){
-    if(
-      (newXPos - 1) > 0
-      ){
-      newXPos--;
-    } else if(
-      (newXPos - 1) < 0 &&
-      (newYPos - 1) >= 0
-      ){
-      newXPos = SUDOKU_FIELDS_X_AXIS - 1;
-      newYPos--;
-    } else if(
-      (newXPos - 1) == 0 &&
-      (newYPos - 1) == 0
-      ){
-      newYPos = SUDOKU_FIELDS_Y_AXIS - 1;
-      newXPos = SUDOKU_FIELDS_X_AXIS - 1;
-    }
-  }
-  printf("end %i %i \n", newXPos, newYPos);
-
-  printField(sudokuFields);
-  system("pause");
-  if(validateSudoku(sudokuFields) == 0){
-    solveSudoku(direction, newXPos, newYPos, sudokuFields);
-  }
 }
