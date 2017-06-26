@@ -326,11 +326,12 @@ int difficulty(){
 
 /*
 * =============================================================================
-* ****readUsername(char *cUsername)****
+* readUsername
 * Parameter: char *cUsername
 * RÃ¼ckgabewert: -
-* Beschreibung: Liest die Konsoleneingabe aus und speichert sie im 
-				char-Array cUsername
+* Beschreibung: Liest die Konsoleneingabe aus und speichert sie im
+*               char-Array cUsername
+*
 * ============================================================================
 */
 void readUsername(char *cUsername)
@@ -348,11 +349,12 @@ void readUsername(char *cUsername)
 
 /*
 * =============================================================================
-* ****readPassword(char *cPassword)****
+* readPassword
 * Parameter: char *cPassword
 * RÃ¼ckgabewert:
 * Beschreibung: Liest die Konsoleneingabe aus und speichert sie im
-				char-Array cPassword
+*               char-Array cPassword
+*
 * ============================================================================
 */
 void readPassword(char *cPassword) //also used to read the password repeat
@@ -374,10 +376,11 @@ void readPassword(char *cPassword) //also used to read the password repeat
 * Parameter: -
 * Rückgabewert: -
 * Beschreibung: Geht durch die einzelnen Aufgaben beim Einloggen.
-				Sowohl das Aufrufen der Konsolenausgaben, das Einlesen der
-				Daten vom Nutzer, sowie die Datenbankabfrage und schlieÃt
-				dies bei Erfolg mit einer neuen 
-				Konsolenausgabe (showLoggedInStartScreen) ab.
+*               Sowohl das Aufrufen der Konsolenausgaben, das Einlesen der
+*               Daten vom Nutzer, sowie die Datenbankabfrage und schlieÃt
+*               dies bei Erfolg mit einer neuen 
+*               Konsolenausgabe (showLoggedInStartScreen) ab.
+*
 * ============================================================================
 */
 void handleLogin()
@@ -407,8 +410,8 @@ void handleLogin()
 		//Nicht erfolgreicher Login
 		else
 		{
-			printErrorMessage("Benutzername oder Passwort ist falsch.\
-			Wenn Sie es erneut versuchen mÃ¶chten, drÃ¼cke Enter.");
+			printErrorMessage("Benutzername oder Passwort ist falsch."\
+			"Wenn Sie es erneut versuchen mÃ¶chten, drÃ¼cke Enter.");
 
 			navigation(cKeyPressed);
 
