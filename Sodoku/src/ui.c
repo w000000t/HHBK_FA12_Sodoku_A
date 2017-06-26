@@ -1,9 +1,38 @@
+ /*
+================================================================================
+Autoren: Knops, Kamps, Schikora, Scheile, Knapp, Marx
+Klasse: FA12
+Programmname: Sudoku
+Datum: 26.06.2017
+Beschreibung: Mit dem Programm ist es möglich Sudoku zu spielen. Das Programm
+startet im Startbildschirm. Dort kann man sich Einloggen, Registrieren oder
+ein Schnelles Spiel starten. Wenn man sich einloggt, hat man die Möglichkeit,
+die Bestenliste einzusehen und ein gewertetes Spiel zu starten. Während des
+spielens kann man in das Pausenmenue gehen um das Spiel zu beenden oder um
+die Hilfe zu benutzen.
+Version:0.2
+Compiler: Visual Studio 2012
+===============================================================================
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <Windows.h>
 
 #include "../inc/ui.h"
 
+/*
+* =============================================================================
+* printSudokuRules
+* Parameter: /
+* Rückgabewert: /
+* Beschreibung: Schreibt die Sudokuregln in das Konsolenfenster. Die Regeln
+* die geschrieben werden lauten: "In jeder Zeile duerfen die Ziffern von 
+* 1 bis 9 nur einmal vorkommen", "In jeder Spalte duerfen die Ziffern von 
+* 1 bis 9 nur einmal vorkommen" und "In jedem Block duerfen die Ziffern von 
+* 1 bis 9 nur einmal vorkommen".
+* ============================================================================
+*/
 void printSudokuRules() {
 
    char cKeyPressed[10];
@@ -24,6 +53,15 @@ void printSudokuRules() {
     navigation(cKeyPressed);
 }
 
+
+/*
+* =============================================================================
+* center
+* Parameter: char message Array
+* Rückgabewert: /
+* Beschreibung: Zentriert die Nachricht und gibt sie im Konsolenfenster aus.
+* ============================================================================
+*/
 void center(char message[]){
    int iWidth = 157, iNeededSpace;
    int i = 0;
@@ -50,41 +88,53 @@ void center(char message[]){
    printf("%s", cNewString);
 }
 
-//*****************************************************************************
-//Name: whiteSpace
-//Parameter: /
-//Description:Does one Tabstop
-//*****************************************************************************
+/*
+* =============================================================================
+* whiteSpace
+* Parameter: /
+* Rückgabewert: /
+* Beschreibung: Macht einen Tabstop.
+* ============================================================================
+*/
 void whiteSpace()
 {
     printf("\t");
 }
 
-//*****************************************************************************
-//Name: bigWhiteSpace
-//Parameter: /
-//Description: Does nine Tabstops
-//*****************************************************************************
+/*
+* =============================================================================
+* bigWhiteSpace
+* Parameter: /
+* Rückgabewert: /
+* Beschreibung: Macht insgesamt neun Tabstopps.
+* ============================================================================
+*/
 void bigWhiteSpace()
 {
     printf("\t\t\t\t\t\t\t\t\t");// 9 Tabstops
 }
 
-//*****************************************************************************
-//Name: quadWhiteSpace
-//Parameter: /
-//Description:Does four Tabstops
-//*****************************************************************************
+/*
+* =============================================================================
+* quadWhiteSpace
+* Parameter: /
+* Rückgabewert: /
+* Beschreibung: Macht vier Tabstops.
+* ============================================================================
+*/
 void quadWhiteSpace()
 {
 	printf("\t\t\t\t");
 }
 
-//*****************************************************************************
-//Name: quadWhiteSpace
-//Parameter: /
-//Description:Does six Tabstops
-//*****************************************************************************
+/*
+* =============================================================================
+* hexaWhiteSpace
+* Parameter: /
+* Rückgabewert: /
+* Beschreibung: Macht sechs Tabstops.
+* ============================================================================
+*/
 void hexaWhiteSpace()
 {
 	quadWhiteSpace();
@@ -92,21 +142,29 @@ void hexaWhiteSpace()
 	whiteSpace();
 }
 
-//*****************************************************************************
-//Name: lineBreaks
-//Parameter: /
-//Description:
-//*****************************************************************************
+/*
+* =============================================================================
+* lineBreaks
+* Parameter: /
+* Rückgabewert: /
+* Beschreibung: Die Methode lässt den Cursor 2 Zeilen nach unten springen.
+* ============================================================================
+*/
 void lineBreaks()
 {
 	printf("\n\n");
 }
 
-//*****************************************************************************
-//Name: printErrorMessage
-//Parameter: char cError Error string
-//Description:
-//*****************************************************************************
+/*
+* =============================================================================
+* printErrorMessage
+* Parameter: char cError
+* Rückgabewert: /
+* Beschreibung: Die methode gibt eine Fehlermeldung aus. Sie fängt an mit
+* "Es ist ein Fehler aufgetreten:" und endet mit dem Fehler der als String 
+*übergeben wird.
+* ============================================================================
+*/
 void printErrorMessage(char *cError)
 {
 	lineBreaks();
@@ -115,161 +173,215 @@ void printErrorMessage(char *cError)
 	printf("Es ist ein Fehler aufgetreten: %s", cError);
 }
 
-//*****************************************************************************
-//Name: showStartScreen
-//Parameter: /
-//Description:
-//*****************************************************************************
+/*
+* =============================================================================
+* showStartScreen
+* Parameter: int iSelector
+* Rückgabewert: /
+* Beschreibung: Zeigt den Startbildschirm an, wenn man noch nicht Eingeloggt
+* ist. Er zeigt die folgenden Menuepunkte: "Schnelles Spiel", "Login", 
+* "Registrieren" und "Beenden".
+* ============================================================================
+*/
 void showStartScreen(int iSelector)
 {
-	system("cls");
+	system("cls"); // Leert das Konsolenfenster
 	lineBreaks();
-   center("Sudoku");
+   center("Sudoku"); // Zentriert das Wort "Sudoku"
 	lineBreaks();
-	center("Schnelles Spiel");
-	printSelector(1, iSelector);
+	center("Schnelles Spiel"); // Zentriert das Wort "Schnelles Spiel"
+	printSelector(1, iSelector); // Wenn der Selector an der Position 1 ist
+	// wird er hier angezeigt
 	lineBreaks();
-	center("Login");
-	printSelector(2, iSelector);
+	center("Login"); // Zentriert das Wort "Login"
+	printSelector(2, iSelector); // Wenn der Selector an der Position 2 ist
+	// wird er hier angezeigt
 	lineBreaks();
-	center("Registrieren");
-	printSelector(3, iSelector);
+	center("Registrieren"); // Zentriert das Wort "Registrieren"
+	printSelector(3, iSelector); // Wenn der Selector an der Position 3 ist
+	// wird er hier angezeigt
 	lineBreaks();
-	center("Beenden");
-	printSelector(4, iSelector);
+	center("Beenden"); // Zentriert das Wort "Beenden"
+	printSelector(4, iSelector); // Wenn der Selector an der Position 3 ist
+	// wird er hier angezeigt
 	lineBreaks();
 }
 
-//*****************************************************************************
-//Name: printLogin
-//Parameter: /
-//Description:
-//*****************************************************************************
+/*
+* =============================================================================
+* printLogin
+* Parameter: /
+* Rückgabewert: /
+* Beschreibung: Leert das Fenster und schreibt das Wort "Login" 
+* in die Konsole.
+* ============================================================================
+*/
 void printLogin()
 {
-	system("cls");
+	system("cls"); // Leert das Konsolenfenster
 	lineBreaks();
-	center("Login");
+	center("Login"); // Zentriert das Wort "Login" und gibt es aus
 }
 
-//*****************************************************************************
-//Name: printRegistration
-//Parameter: /
-//Description:
-//*****************************************************************************
+/*
+* =============================================================================
+* printRegistration
+* Parameter: /
+* Rückgabewert: /
+* Beschreibung: Leert das Fenster und schreibt das Wort "Registrierung" 
+* in die Konsole.
+* ============================================================================
+*/
 void printRegistration()
 {
-	system("cls");
+	system("cls"); // Leert das Konsolenfenster
 	lineBreaks();
-	center("Registrierung");
+	center("Registrierung"); // Zentriert das Wort "Registrierung" und 
+	// gibt es aus
 }
 
-//*****************************************************************************
-//Name: printInputUsername
-//Parameter: /
-//Description:
-//*****************************************************************************
+/*
+* =============================================================================
+* printInputUsername
+* Parameter: /
+* Rückgabewert: /
+* Beschreibung: Schreibt zentriert "Bitte geben Sie Ihren Usernamen ein:"
+* in die Konsole.
+* ============================================================================
+*/
 void printInputUsername()
 {
 	lineBreaks();
-	center("Bitte geben Sie Ihren Usernamen ein:");
+	center("Bitte geben Sie Ihren Usernamen ein:"); // Gibt den Satz 
+	// zentriert aus
 	lineBreaks();
 	bigWhiteSpace();
 }
 
-//*****************************************************************************
-//Name: printInputPassword
-//Parameter: /
-//Description:
-//*****************************************************************************
+/*
+* =============================================================================
+* printInputPassword
+* Parameter: /
+* Rückgabewert: /
+* Beschreibung: Schreibt zentriert "Bitte geben Sie Ihr Passwort ein:"
+* in die Konsole.
+* ============================================================================
+*/
 void printInputPassword()
 {
 	lineBreaks();
-	center("Bitte geben Sie Ihr Passwort ein:");
+	center("Bitte geben Sie Ihr Passwort ein:"); // Gibt den Satz zentrtiert
+    // aus
 	lineBreaks();
 	bigWhiteSpace();
 }
 
-//*****************************************************************************
-//Name: printInputPasswordRepeat
-//Parameter: /
-//Description:
-//*****************************************************************************
+/*
+* =============================================================================
+* printInputPasswordRepeat
+* Parameter: /
+* Rückgabewert: /
+* Beschreibung: Schreibt zentriert "Bitte wiederholen Sie das Passwort:"
+* in die Konsole.
+* ============================================================================
+*/
 void printInputPasswordRepeat()
 {
 	lineBreaks();
-	center("Bitte wiederholen Sie das Passwort:");
+	center("Bitte wiederholen Sie das Passwort:"); // Gibt den Satz zentriert
+	// aus
 	lineBreaks();
 	bigWhiteSpace();
 }
 
+/*
+* =============================================================================
+* printSuccessMessage
+* Parameter: char Zeiger cUsername
+* Rückgabewert: /
+* Beschreibung: Zeigt an, dass die Registrierung geklappt hat.
+* ============================================================================
+*/
 void printSuccessMessage(char* cUsername)
 {
    char* cMessage;
-   cMessage = strcat("Ihr Username ist: ", cUsername);
+   cMessage = strcat("Ihr Username ist: ", cUsername); // In cMessage wird
+   // die Nachricht "Ihr Username ist: ..." reingeschrieben
 	lineBreaks();
 
-	center(cMessage);
+	center(cMessage); // Wird zentriert und ausgegeben
 }
 
-//*****************************************************************************
-//Name: showDifficulty
-//Parameter: /
-//Description:
-//*****************************************************************************
+/*
+* =============================================================================
+* showDifficulty
+* Parameter: int iSelector
+* Rückgabewert: /
+* Beschreibung: Zeigt die drei verschieden Schwierigkeitsstufen "Leicht", 
+* "Mittel" und "Schwer" an.
+* ============================================================================
+*/
 void showDifficulty(int iSelector)
 {
-	system("cls");
+	system("cls"); // Leert das Konsolenfenster
 	lineBreaks();
-	center("Schwierigkeitsgrad");
+	center("Schwierigkeitsgrad"); // Wird zentriert und ausgegeben
 	lineBreaks();
-	center("Leicht");
+	center("Leicht"); // Wird zentriert und ausgegeben
 	printSelector(1, iSelector);
 	lineBreaks();
-	center("Mittel");
+	center("Mittel"); // Wird zentriert und ausgegeben
 	printSelector(2, iSelector);
 	lineBreaks();
-	center("Schwer");
+	center("Schwer"); // Wird zentriert und ausgegeben
 	printSelector(3, iSelector);
 }
 
-//*****************************************************************************
-//Name: loggedInStartScreen
-//Parameter: /
-//Description:
-//*****************************************************************************
+/*
+* =============================================================================
+* showLoggedInStartScreen
+* Parameter: int iSelector
+* Rückgabewert: /
+* Beschreibung: Zeigt den Bildschirm für eingeloggte User an mit den Menue-
+* punkten "Spielen", "Bestenliste", "Regeln", "Logout" und "Beenden".
+* ============================================================================
+*/
 void showLoggedInStartScreen(int iSelector)
 {
-	system("cls");
+	system("cls"); // Konsolenfenster wird geleert
 	lineBreaks();
-	center("Sudoku");
+	center("Sudoku"); // Wird zentriert und ausgegeben
 	lineBreaks();
-	center("Spielen");
+	center("Spielen"); // Wird zentriert und ausgegeben
 	printSelector(1, iSelector);
 	lineBreaks();
-	center("Bestenliste");
+	center("Bestenliste"); // Wird zentriert und ausgegeben
 	printSelector(2, iSelector);
 	lineBreaks();
-	center("Regeln");
+	center("Regeln"); // Wird zentriert und ausgegeben
 	printSelector(3, iSelector);
 	lineBreaks();
-	center("Logout");
+	center("Logout"); // Wird zentriert und ausgegeben
 	printSelector(4, iSelector);
 	lineBreaks();
-	center("Beenden");
+	center("Beenden"); // Wird zentriert und ausgegeben
 	printSelector(5, iSelector);
 	lineBreaks();
 }
 
-//*****************************************************************************
-//Name: printFieldHorizontal
-//Parameter: /
-//Description:
-//*****************************************************************************
+/*
+* =============================================================================
+* printFieldHorizontal
+* Parameter: /
+* Rückgabewert: /
+* Beschreibung: Zeichnet die horizontale Linie des Sudohufeldes.
+* ============================================================================
+*/
 void printFieldHorizontal()
 {
 	int iCounter = 9;
-	while(iCounter > 0)
+	while(iCounter > 0) // Solange iCounter größer als Null ist führe 
+	//die Schleife aus
 	{
 		printf("\xC5\xC4\xC4\xC4\xC4\xC4\xC4");
     iCounter--;
@@ -278,37 +390,51 @@ void printFieldHorizontal()
 	printf("\xC5\n");
 }
 
+/*
+* =============================================================================
+* showPauseMenu
+* Parameter: int iSelector
+* Rückgabewert: /
+* Beschreibung: Zeigt das Pausenmenue an mit den Optionen "Zurueck zum Spiel",
+* "Zeige Loesung" und "Spiel Beenden".
+* ============================================================================
+*/
 void showPauseMenu(iSelector)
 {
-   system("cls");
+   system("cls"); // Leert das Konsolenfenster
    lineBreaks();
-   center("Pause");
+   center("Pause"); // Wird zentriert und ausgegeben
    lineBreaks();
    lineBreaks();
-	center("Zurueck zum Spiel");
+	center("Zurueck zum Spiel"); // Wird zentriert und ausgegeben
    printSelector(1, iSelector);
 	lineBreaks();
-	center("Zeige Loesung");
+	center("Zeige Loesung"); // Wird zentriert und ausgegeben
    printSelector(2, iSelector);
 	lineBreaks();
-	center("Spiel Beenden");
+	center("Spiel Beenden"); // Wird zentriert und ausgegeben
    printSelector(3, iSelector);
 }
 
-//*****************************************************************************
-//Name: printField
-//Parameter: /
-//Description:
-//*****************************************************************************
+/*
+* =============================================================================
+* printField
+* Parameter: sudoku_field sudoku_fields[SUDOKU_FIELDS_X_AXIS]
+* [SUDOKU_FIELDS_Y_AXIS]
+* Rückgabewert: /
+* Beschreibung: Zeichnet das komplette Sudokufeld und zeigt in manchen Feldern
+* Ziffern an. Unter dem Feld wird ein kleines Menue angezeigt.
+* ============================================================================
+*/
 void printField(sudoku_field sudoku_fields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS])
 {
-   system("cls");
-	/*sudoku_field sudoku_fields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y_AXIS];*/
+   system("cls"); // Leert das Konsolenfenster
 	int i,j;
 
 	for(i = 0; i < SUDOKU_FIELDS_X_AXIS; i++){
 		hexaWhiteSpace();
-		printFieldHorizontal();
+		printFieldHorizontal(); // Ruft die Methode auf um die horizontale
+		// Spielfeldlinie zu zeichnen
 		hexaWhiteSpace();
 		for(j = 0; j < SUDOKU_FIELDS_Y_AXIS; j++){
 
@@ -339,6 +465,15 @@ void printField(sudoku_field sudoku_fields[SUDOKU_FIELDS_X_AXIS][SUDOKU_FIELDS_Y
 
 }
 
+/*
+* =============================================================================
+* showHighscore
+* Parameter: /
+* Rückgabewert: /
+* Beschreibung: Zeigt die besten Spieler an mit dem Namen und 
+* den erzielten Punkten.
+* ============================================================================
+*/
 void showHighscore(){
     lineBreaks();
     quadWhiteSpace();
@@ -353,32 +488,22 @@ void showHighscore(){
     lineBreaks();
 }
 
+/*
+* =============================================================================
+* printSelector
+* Parameter: int iPosition, int iSelector
+* Rückgabewert: /
+* Beschreibung: Zeigt einen Pfeil neben dem ausgewählten Menuepunkt an.
+* ============================================================================
+*/
 void printSelector(int iPosition, int iSelector)
 {
-	if (iPosition - 1 == iSelector)
+	if (iPosition - 1 == iSelector) // Wenn iPosition - 1 gleich ist wie 
+	//iSelector dann Zeichne einen Pfeil
 	{
-		printf("\t<-");
+		printf("\t<-"); // Zeichnet einen Pfeil
 	}
 }
 
-void showIntro()
-{
-   /*char cKeyPressed[10];
-	system("cls");
-	printf(" .----------------.  .----------------.  .----------------.  .----------------.  .----------------.  .----------------. \n");
-	printf("| .--------------. || .--------------. || .--------------. || .--------------. || .--------------. || .--------------. |\n");
-	printf("| |    _______   | || | _____  _____ | || |  ________    | || |     ____     | || |  ___  ____   | || | _____  _____ | |\n");
-	printf("| |   /  ___  |  | || ||_   _||_   _|| || | |_   ___ `.  | || |   .'    `.   | || | |_  ||_  _|  | || ||_   _||_   _|| |\n");
-	printf("| |  |  (__ \_|  | || |  | |    | |  | || |   | |   `. \ | || |  /  .--.  \  | || |   | |_/ /    | || |  | |    | |  | |\n");
-	printf("| |   '.___`-.   | || |  | '    ' |  | || |   | |    | | | || |  | |    | |  | || |   |  __'.    | || |  | '    ' |  | |\n");
-	printf("| |  |`\____) |  | || |   \ `--' /   | || |  _| |___.' / | || |  \  `--'  /  | || |  _| |  \ \_  | || |   \ `--' /   | |\n");
-	printf("| |  |_______.'  | || |    `.__.'    | || | |________.'  | || |   `.____.'   | || | |____||____| | || |    `.__.'    | |\n");
-	printf("| |              | || |              | || |              | || |              | || |              | || |              | |\n");
-	printf("| '--------------' || '--------------' || '--------------' || '--------------' || '--------------' || '--------------' |\n");
-	printf(" '----------------'  '----------------'  '----------------'  '----------------'  '----------------'  '----------------' \n");
-   navigation(cKeyPressed);*/
-
-   mainMenu();
-}
 
 
